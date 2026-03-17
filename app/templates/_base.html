@@ -1,18 +1,36 @@
+
+<!-- Documento base compartilhado entre templates Flask/Jinja.
+     Centraliza cabeçalho global, navegação, widgets e áreas de extensão via blocks. -->
+<!-- ====================================================================
+[BLOCO] DOCUMENTO_HTML
+[NOME] layout_base
+[RESPONSABILIDADE] Estrutura principal do layout base da aplicação Flask/Jinja
+==================================================================== -->
 <!DOCTYPE html>
 <html lang="pt-br">
 
   <head>
 
+    <!-- Metadados essenciais do documento e ponto de extensão para o título da página -->
     <meta charset="UTF-8" />
     <title>{% block title %}Pneumark SGP{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <!-- Dependências visuais globais: ícones externos e folha principal do frontend -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
 
     <style>
+      /* Estilos locais deste layout.
+         Complementam o CSS global para elementos exclusivos da estrutura base. */
+      /* ====================================================================
+      [BLOCO] BLOCO_STYLE
+      [NOME] estilos_layout_base
+      [RESPONSABILIDADE] Agrupar estilos globais do layout base, widgets e responsividade
+      ==================================================================== */
 
+      /* Estrutura visual do topo principal, marca, navegação e áreas auxiliares. */
       /* ====================================================================
       [BLOCO] BLOCO_UTIL
       [NOME] appbar_layout_styles
@@ -36,8 +54,16 @@
       .widget,.motd,.userchip{display:flex;gap:8px;align-items:center;padding:6px 10px;border-radius:10px;background:#0c1624;border:1px solid #1c2b45}
       .widget .label{opacity:.8;font-size:.8rem}
       .widget strong{font-variant-numeric:tabular-nums}
-      .motd i{opacity:.9}
-      .motd-quote{font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:400px}
+      .motd{flex:1 1 420px;min-width:260px}
+      .motd i{opacity:.9;flex:0 0 auto}
+      .motd-quote{
+        font-style:italic;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        max-width:560px;
+        display:block;
+      }
       .container{max-width:1200px;margin:16px auto;padding:0 16px}
       .footer{text-align:center;color:#7c8aa5;padding:24px 0}
       .fadeout{position:fixed;inset:0;pointer-events:none;background:#0f1b2a;opacity:0;transition:opacity .18s ease;z-index:9999}
@@ -49,38 +75,53 @@
       [FIM BLOCO] appbar_layout_styles
       ==================================================================== */
 
+      /* Regras específicas do widget compacto de clima exibido no cabeçalho. */
       /* ====================================================================
       [BLOCO] BLOCO_UTIL
       [NOME] weather_mini_styles
       [RESPONSABILIDADE] Estilos da mini-previsão (5 dias) no widget de clima
       ==================================================================== */
       /* Mini-previsão (discreta) */
-      .weather-mini{display:flex;gap:10px;margin-left:8px;flex-wrap:nowrap}
-      .wxday{display:flex;flex-direction:column;align-items:center;font-size:.72rem;line-height:1.1;min-width:34px}
-      .wxday .icon{font-size:.9rem;line-height:1}
-      .wxday .t{font-variant-numeric:tabular-nums;white-space:nowrap}
-      .wxday .max{font-weight:600}
-      .wxday .min{opacity:.7}
-      
-      @media (max-width:900px){.weather-mini{gap:8px}}
+      .weather-widget{
+        min-width:auto;
+        white-space:nowrap;
+      }
+
+      .weather-info{
+        display:flex;
+        align-items:center;
+        line-height:1;
+      }
+
+      .weather-info .label{
+        font-size:.9rem;
+        opacity:.95;
+        white-space:nowrap;
+      }
       /* ====================================================================
       [FIM BLOCO] weather_mini_styles
       ==================================================================== */
     
+      /* ====================================================================
+      [FIM BLOCO] estilos_layout_base
+      ==================================================================== */
     </style>
 
-    
+    <!-- Área reservada para estilos, metas ou scripts adicionais dos templates filhos -->
     {% block head_extra %}{% endblock %}
   </head>
 
   <body>
     
+    <!-- Camada superior de destaque visual e overlay usado na transição entre rotas -->
     <div class="topline"></div>
     <div class="fadeout" id="fadeout"></div>
 
+    <!-- Contêiner principal da aplicação; recebe estado "ready" após o bootstrap visual -->
     <div class="app" id="app">
       <header class="appbar" role="banner">
         <div class="appbar-inner">
+          <!-- Identidade visual do sistema e identificação textual do módulo atual -->
           <div class="brand">
             <img class="brand-logo" src="{{ url_for('static', filename='img/Logo jpg.jpg') }}" alt="Pneumark">
             <div>
@@ -94,14 +135,12 @@
           [NOME] global_navigation
           [RESPONSABILIDADE] Renderizar navegação principal do sistema
           ==================================================================== -->
+          <!-- Navegação principal com links globais reutilizados por todos os módulos -->
           <!-- Navegação -->
           <nav class="nav">
-            
             <a href="{{ url_for('modulos_bp.tela_modulos') }}"
-
               data-no-fade translate="no">Home</a>
-          
-            </nav>
+          </nav>
           <!-- ====================================================================
           [FIM BLOCO] global_navigation
           ==================================================================== -->
@@ -111,6 +150,7 @@
           [NOME] global_widgets
           [RESPONSABILIDADE] Exibir widgets globais (relógio, clima, frase do dia e usuário/logout)
           ==================================================================== -->
+          <!-- Área de utilidades globais do cabeçalho para contexto operacional do usuário -->
           <!-- Widgets globais -->
           <div class="widgets">
             <div class="widget" title="Data e hora local">
@@ -119,11 +159,12 @@
               <strong id="clock">--:--</strong>
             </div>
 
-            <div class="widget" title="Previsão do tempo">
+            <div class="widget weather-widget" title="Clima atual">
               <i class="fa-solid fa-cloud-sun"></i>
-              <div class="label" id="weather-label">Local</div>
-              <strong id="weather">localizando…</strong>
-              <div id="weather-mini" class="weather-mini" aria-label="Previsão para 5 dias"></div>
+              <div class="weather-info">
+                <div class="label" id="weather-label">Carregando...</div>
+                <strong id="weather">--°C</strong>
+              </div>
             </div>
 
             <div class="motd" title="Mensagem do dia">
@@ -131,8 +172,8 @@
               <span class="motd-quote" id="motd-text">Carregando frase do dia…</span>
             </div>
 
+            <!-- Exibe o usuário autenticado e disponibiliza ação de logout quando aplicável -->
             <div class="userchip" aria-label="Usuário atual">
-              
               <i class="fa-regular fa-circle-user"></i>
 
               <span>
@@ -146,17 +187,13 @@
                   </button>
                 </form>
               {% endif %}
-            
             </div>
 
             <!-- <div class="userchip" aria-label="Usuário atual">
-              
               <i class="fa-regular fa-circle-user"></i>
-              
               <span>
                 {{ (current_user.name if current_user.is_authenticated else 'Operador') if current_user is defined else 'Operador' }}
               </span>
-
             </div> -->
           </div>
           <!-- ====================================================================
@@ -170,6 +207,7 @@
       [NOME] flash_messages
       [RESPONSABILIDADE] Renderizar mensagens flash do backend (com categorias)
       ==================================================================== -->
+      <!-- Canal padrão para feedbacks do backend enviados via Flask flash -->
       <!-- FLASHES -->
       <div class="flash-container container h-0">
         {% with msgs = get_flashed_messages(with_categories=true) %}
@@ -189,6 +227,7 @@
       [NOME] main_content
       [RESPONSABILIDADE] Área principal para toolbar e conteúdo dos módulos (blocks Jinja)
       ==================================================================== -->
+      <!-- Região central extensível onde cada template filho injeta sua interface -->
       <main class="container" role="main">
         {% block toolbar %}{% endblock %}
         {% block content %}{% endblock %}
@@ -202,6 +241,7 @@
       [NOME] footer_block
       [RESPONSABILIDADE] Renderizar rodapé padrão (block Jinja para sobrescrita)
       ==================================================================== -->
+      <!-- Rodapé padrão sobrescrevível para necessidades específicas de cada módulo -->
       {% block footer %}
         <div class="footer">© {{ now().year if now is defined else '' }} Pneumark — SGP</div>
       {% endblock %}
@@ -211,172 +251,185 @@
     </div>
 
     <script>
+      /* Script global do layout base.
+         Fornece comportamentos compartilhados sem depender do conteúdo dos módulos. */
+      /* ====================================================================
+      [BLOCO] BLOCO_SCRIPT
+      [NOME] scripts_layout_base
+      [RESPONSABILIDADE] Agrupar scripts utilitários globais do layout base
+      ==================================================================== */
+
+      const app = document.getElementById('app');
+      const fadeout = document.getElementById('fadeout');
+      const clockEl = document.getElementById('clock');
+      const weatherEl = document.getElementById('weather');
+      const weatherLabelEl = document.getElementById('weather-label');
+      const motdEl = document.getElementById('motd-text');
+
+      const ROUTE_FADE_DELAY_MS = 180;
+      const CLOCK_REFRESH_INTERVAL_MS = 15000;
+
+      const WEATHER_FIXED = {
+        label: "Embu-Guaçu",
+        status: "Clima indisponível"
+      };
+
+      /* Bootstrap visual inicial da aplicação após a primeira renderização do DOM. */
       /* ====================================================================
       [BLOCO] BLOCO_UTIL
       [NOME] app_entry_animation
       [RESPONSABILIDADE] Aplicar animação de entrada suave ao carregar a aplicação
       ==================================================================== */
       // Entrada suave
-      const app = document.getElementById('app');
-      requestAnimationFrame(()=> app.classList.add('ready'));
+      function initAppEntryAnimation() {
+        if (!app) return;
+        requestAnimationFrame(() => app.classList.add('ready'));
+      }
+
+      initAppEntryAnimation();
       /* ====================================================================
       [FIM BLOCO] app_entry_animation
       ==================================================================== */
 
+      /* Controla a navegação com transição visual antes do redirecionamento da página. */
       /* ====================================================================
       [BLOCO] BLOCO_UTIL
       [NOME] route_fade_navigation
       [RESPONSABILIDADE] Interceptar cliques em links e aplicar efeito de fade-out na navegação
       ==================================================================== */
       // Saída com fade
-      const fadeout = document.getElementById('fadeout');
-      
-      function routeTo(href){
-        if(!href) return;
+
+      // Executa redirecionamento com atraso controlado para sincronizar a animação de saída.
+      function routeTo(href) {
+        if (!href || !fadeout) return;
         fadeout.classList.add('active');
-        setTimeout(()=> window.location.assign(href), 180);
+        setTimeout(() => window.location.assign(href), ROUTE_FADE_DELAY_MS);
       }
 
-      document.addEventListener('click', (e)=>{
-        const a = e.target.closest('a');
-        if(!a) return;
-        const href = a.getAttribute('href');
-        if(!href || href.startsWith('#') || a.hasAttribute('data-no-fade')) return;
-        e.preventDefault(); routeTo(href);
-      });
+      function bindRouteFadeNavigation() {
+        document.addEventListener('click', (e) => {
+          const a = e.target.closest('a');
+          if (!a) return;
+
+          const href = a.getAttribute('href');
+          if (!href || href.startsWith('#') || a.hasAttribute('data-no-fade')) return;
+
+          e.preventDefault();
+          routeTo(href);
+        });
+      }
+
+      bindRouteFadeNavigation();
       /* ====================================================================
       [FIM BLOCO] route_fade_navigation
       ==================================================================== */
 
+      /* Atualização periódica do relógio do cabeçalho com tolerância à ausência do elemento. */
       /* ====================================================================
       [BLOCO] BLOCO_UTIL
       [NOME] clock_widget
       [RESPONSABILIDADE] Atualizar relógio no header em intervalos regulares
       ==================================================================== */
       // Relógio (com guard)
-      const clockEl = document.getElementById('clock');
-      
-      function tickClock(){
-        
+
+      // Lê a hora do navegador e formata no padrão HH:MM para exibição compacta.
+      function tickClock() {
         if (!clockEl) return;
-        
+
         const d = new Date();
-        clockEl.textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-      
+        clockEl.textContent = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
       }
-      
-      tickClock(); setInterval(tickClock, 15000);
+
+      function initClockWidget() {
+        tickClock();
+        setInterval(tickClock, CLOCK_REFRESH_INTERVAL_MS);
+      }
+
+      initClockWidget();
       /* ====================================================================
       [FIM BLOCO] clock_widget
       ==================================================================== */
 
+      /* Widget de clima em modo estático.
+         Mantém previsibilidade visual quando não há integração externa ativa. */
       /* ====================================================================
-      [BLOCO] BLOCO_API
+      [BLOCO] BLOCO_UTIL
       [NOME] weather_widget
-      [RESPONSABILIDADE] Buscar clima (Open-Meteo) e renderizar mini-previsão de 5 dias
+      [RESPONSABILIDADE] Exibir clima fixo no header sem dependência de API externa
       ==================================================================== */
-      // ===== CLIMA: Embu-Guaçu/SP + mini previsão 5 dias =====
-      const weatherEl = document.getElementById('weather');
-      const wlabel    = document.getElementById('weather-label');
-      const miniEl    = document.getElementById('weather-mini');
+      // ===== CLIMA FIXO =====
 
-      function setWeatherText(t){ if (weatherEl) weatherEl.textContent = t; }
+      // Inicializa os campos do widget com valores padrão locais.
+      function initWeatherWidget() {
+        if (weatherLabelEl) {
+          weatherLabelEl.textContent = WEATHER_FIXED.label;
+        }
 
-      function iconFromCode(code){
-        if (code === 0) return "☀️";
-        if ([1,2,3].includes(code)) return "🌤️";
-        if ([45,48].includes(code)) return "🌫️";
-        if ([51,53,55,56,57].includes(code)) return "🌦️";
-        if ([61,63,65,66,67,80,81,82].includes(code)) return "🌧️";
-        if ([71,73,75,77,85,86].includes(code)) return "🌨️";
-        return "⛅";
-      }
-
-      function renderMini(daily){
-          
-        if (!miniEl || !daily || !daily.time) { if(miniEl) miniEl.innerHTML = ""; return; }
-        
-        const dias = ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'];
-        miniEl.innerHTML = "";
-        const maxCards = 5;
-        
-        for (let i=0; i < Math.min(maxCards, daily.time.length); i++){
-          const dt = new Date(daily.time[i+1]);
-          const wd = dias[dt.getDay()];
-          const ico = iconFromCode(daily.weather_code[i]);
-          const tmax = Math.round(daily.temperature_2m_max[i]);
-          const tmin = Math.round(daily.temperature_2m_min[i]);
-          
-          miniEl.insertAdjacentHTML('beforeend', 
-            
-            `<div class="wxday">
-              <div>${wd}</div>
-              <div class="icon">${ico}</div>
-              <div class="t"><span class="max">${tmax}°</span> <span class="min">${tmin}°</span></div>
-            </div>`
-          
-          );
+        if (weatherEl) {
+          weatherEl.textContent = WEATHER_FIXED.status;
         }
       }
 
-      function fetchWeatherNowAndDaily(lat, lon, labelText){
-        const url =
-          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}`+
-          `&current=temperature_2m,weather_code`+
-          `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max`+
-          `&timezone=auto`;
-
-        fetch(url, {cache:'no-store'})
-          .then(r=>r.json())
-          .then(d=>{
-            const t = d?.current?.temperature_2m;
-            const code = d?.current?.weather_code;
-            if (wlabel) wlabel.textContent = labelText || "Local";
-            setWeatherText(`${Math.round(t)}°C ${iconFromCode(code)}`);
-            renderMini(d?.daily);
-          })
-
-        .catch(()=>{
-          setWeatherText("indisp.");
-          if (miniEl) miniEl.innerHTML = "";
-        });
-
-      }
-
-      // Ponto fixo: Embu-Guaçu/SP
-      fetchWeatherNowAndDaily(-23.83, -46.81, "Embu-Guaçu");
+      initWeatherWidget();
       /* ====================================================================
       [FIM BLOCO] weather_widget
       ==================================================================== */
 
+      /* Integração frontend-backend para obtenção da frase motivacional via endpoint interno. */
       /* ====================================================================
       [BLOCO] BLOCO_API
       [NOME] motd_widget
       [RESPONSABILIDADE] Buscar frase motivacional via endpoint interno e renderizar no header
       ==================================================================== */
       // ===== FRASE MOTIVACIONAL =====
-      const motdEl = document.getElementById('motd-text');
-      fetch('{{ url_for("utilidades_bp.frase_motivacional") }}', {cache:'no-store'})
-        .then(r=>r.json())
-        .then(d=>{
-          if (d && d.texto) motdEl.textContent = d.texto + (d.autor ? ` — ${d.autor}` : '');
-        })
-        .catch(()=> { motdEl.textContent = "Qualidade é fazer o simples, bem feito."; });
+      function applyMotdFallback() {
+        if (!motdEl) return;
+        motdEl.textContent = "Qualidade é fazer o simples, bem feito.";
+      }
+
+      function loadMotdWidget() {
+        if (!motdEl) return;
+
+        fetch('{{ url_for("utilidades_bp.frase_motivacional") }}', { cache: 'no-store' })
+          .then((r) => r.json())
+          .then((d) => {
+            if (d && d.texto) {
+              motdEl.textContent = d.texto + (d.autor ? ` — ${d.autor}` : '');
+              return;
+            }
+
+            applyMotdFallback();
+          })
+          .catch(() => {
+            applyMotdFallback();
+          });
+      }
+
+      loadMotdWidget();
       /* ====================================================================
       [FIM BLOCO] motd_widget
       ==================================================================== */
-    
+
+      /* ====================================================================
+      [FIM BLOCO] scripts_layout_base
+      ==================================================================== */
     </script>
 
+    <!-- Ponto de extensão para scripts específicos dos templates derivados -->
     {% block scripts_extra %}{% endblock %}
 
   </body>
 
 </html>
+<!-- ====================================================================
+[FIM BLOCO] layout_base
+==================================================================== -->
 
 <!-- ====================================================================
 MAPA DO ARQUIVO
 --------------------------------------------------------------------
+DOCUMENTO_HTML: layout_base
+BLOCO_STYLE: estilos_layout_base
 BLOCO_UTIL: appbar_layout_styles
 BLOCO_UTIL: weather_mini_styles
 BLOCO_UTIL: global_navigation
@@ -384,9 +437,44 @@ BLOCO_UTIL: global_widgets
 BLOCO_UTIL: flash_messages
 BLOCO_UTIL: main_content
 BLOCO_UTIL: footer_block
+BLOCO_SCRIPT: scripts_layout_base
+FUNÇÃO: initAppEntryAnimation
 BLOCO_UTIL: app_entry_animation
+FUNÇÃO: routeTo
+FUNÇÃO: bindRouteFadeNavigation
 BLOCO_UTIL: route_fade_navigation
+FUNÇÃO: tickClock
+FUNÇÃO: initClockWidget
 BLOCO_UTIL: clock_widget
-BLOCO_API: weather_widget
+FUNÇÃO: initWeatherWidget
+BLOCO_UTIL: weather_widget
+FUNÇÃO: applyMotdFallback
+FUNÇÃO: loadMotdWidget
 BLOCO_API: motd_widget
 ==================================================================== -->
+
+<!-- ====================================================================
+DOCUMENTAÇÃO DO ARQUIVO
+--------------------------------------------------------------------
+
+DESCRIÇÃO GERAL
+Template base da aplicação Flask/Jinja responsável por padronizar a
+estrutura visual compartilhada, oferecer pontos de extensão via blocks
+Jinja e concentrar utilitários globais de interface.
+
+PRINCIPAIS COMPONENTES
+- Layout estrutural com header, main e footer
+- Navegação principal do sistema
+- Widgets globais de relógio, clima, frase motivacional e usuário
+- Área de mensagens flash do backend
+- Scripts utilitários de animação, navegação com fade e atualização visual
+
+DEPENDÊNCIAS IMPORTANTES
+- Flask/Jinja para renderização de blocks, url_for e condicionais
+- current_user para contexto de autenticação
+- Font Awesome para ícones da interface
+- app.css para estilos globais complementares
+- Endpoint utilidades_bp.frase_motivacional para conteúdo dinâmico da frase
+
+==================================================================== -->
+```

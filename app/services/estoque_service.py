@@ -19,52 +19,61 @@ logger = logging.getLogger(__name__)
 # ====================================================================
 # [BLOCO] BLOCO_DB
 # [NOME] update_stock_after_finish
-# [RESPONSABILIDADE] Atualizar estoque de conjunto incrementando estoque_atual da peça correspondente ao model_code
+# [RESPONSABILIDADE] Wrapper de compatibilidade para concluir produto acabado usando a rotina oficial
 # ====================================================================
-def update_stock_after_finish(model_code: str):
+def update_stock_after_finish(
+    model_code: str,
+    quantidade: int = 1,
+    usuario: str = "Sistema",
+    referencia: Optional[str] = None,
+    session=None,
+) -> str:
     """
-    Incrementa o estoque_atual da peça (tipo='conjunto')
-    correspondente ao model_code informado.
+    Wrapper de compatibilidade.
+
+    IMPORTANTE:
+    - Não faz mais busca direta de model_code em Peca.codigo_pneumark.
+    - Não grava campos inexistentes como updated_at.
+    - Delega a regra oficial para registrar_conclusao_produto_acabado().
+    - Não faz commit aqui quando receber session externa.
+    Retorna o codigo_pneumark do conjunto movimentado.
     """
-    if not model_code:
-        logger.warning("[Estoque] update_stock chamado sem model_code.")
-        return
+    if not model_code or not str(model_code).strip():
+        raise ValueError("model_code ausente para conclusão de produto acabado.")
 
     try:
-        # Busca a peca ignorando maiusculas/minusculas no codigo e garantindo tipo conjunto
-        peca = (
-            db.session.query(Peca)
-            .filter(
-                func.lower(Peca.tipo) == "conjunto",
-                func.lower(Peca.codigo_pneumark) == model_code.lower(),
-            )
-            .first()
+        from app.routes.producao_routes.maquinas_routes.consumo_service import (
+            registrar_conclusao_produto_acabado,
         )
+    except Exception as e:
+        logger.error(
+            f"[Estoque] Falha ao importar registrar_conclusao_produto_acabado: {e}"
+        )
+        raise
 
-        if not peca:
-            # Apenas loga o erro, nao quebra a aplicacao (para nao travar o scanner)
-            logger.error(
-                f"[Estoque] Peca tipo 'conjunto' nao encontrada para modelo: {model_code}"
-            )
-            # Se quiser que o scanner avise erro, descomente a linha abaixo:
-            # raise ValueError(f"Peca nao encontrada: {model_code}")
-            return
+    sess = session or db.session
 
-        # Incrementa
-        peca.estoque_atual = (peca.estoque_atual or 0) + 1
-        peca.updated_at = datetime.utcnow()
-
-        db.session.add(peca)
-        db.session.commit()
+    try:
+        codigo_conjunto = registrar_conclusao_produto_acabado(
+            modelo=str(model_code).strip(),
+            quantidade=quantidade,
+            usuario=(usuario or "Sistema"),
+            referencia=referencia,
+            session=sess,
+        )
 
         logger.info(
-            f"[Estoque] Sucesso: Modelo {model_code} incrementado. Novo total: {peca.estoque_atual}"
+            f"[Estoque] Conclusão redirecionada para rotina oficial | "
+            f"modelo={model_code} conjunto={codigo_conjunto} quantidade={quantidade} referencia={referencia}"
         )
 
+        return codigo_conjunto
+
     except Exception as e:
-        db.session.rollback()
-        logger.error(f"[Estoque] Erro ao atualizar estoque para {model_code}: {str(e)}")
-        raise e
+        logger.error(
+            f"[Estoque] Erro ao concluir produto acabado para modelo={model_code}: {e}"
+        )
+        raise
 
 
 # ====================================================================

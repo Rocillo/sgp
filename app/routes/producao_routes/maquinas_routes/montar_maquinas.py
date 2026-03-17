@@ -360,6 +360,14 @@ def api_montar():
             if len(seriais) > 1
             else f"{codigo_conjunto}-{seriais[0]}"
         )
+
+        # Baixa de componentes acontece AQUI, na criação da montagem.
+        # O produto acabado (conjunto) entra no estoque apenas no fechamento final do painel.
+        logger.info(
+            f"[MONTAGEM] Iniciando reserva/baixa de componentes | "
+            f"modelo={modelo} conjunto={codigo_conjunto} quantidade={quantidade} referencia={referencia}"
+        )
+
         reservar_componentes_para_montagem(
             modelo=codigo_conjunto,
             quantidade_unidades=quantidade,
@@ -367,7 +375,14 @@ def api_montar():
             referencia=referencia,
             session=db.session,
         )
+
+        logger.info(
+            f"[MONTAGEM] Reserva/baixa de componentes concluída | "
+            f"modelo={modelo} conjunto={codigo_conjunto} quantidade={quantidade} referencia={referencia}"
+        )
+
         db.session.commit()
+
     except EstoqInsuficiente as e:
         db.session.rollback()
         faltas = [

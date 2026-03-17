@@ -80,6 +80,11 @@ def home_producao():
 # ====================================================================
 @home_producao_bp.route("/placeholder/<slug>", methods=["GET"])
 def placeholder(slug):
+
+    # novo tratamento para a tela de indicadores
+    if slug == "indicadores":
+        return render_template("indicadores_templates/cep.html")
+
     mapping = {
         "montar-maquina": ("maquinas_bp.pagina_montagem", {}),
         "painel-visual": (

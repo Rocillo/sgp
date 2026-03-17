@@ -388,20 +388,40 @@ def registrar_conclusao_produto_acabado(
 ) -> str:
     """
     Dá ENTRADA (+quantidade) no estoque do CONJUNTO correspondente ao modelo.
-    - Usa o mapeamento MODEL_TO_CONJUNTO (não depende de capacidade_service).
+    - Usa o mapeamento MODEL_TO_CONJUNTO como fonte oficial.
     - Deve rodar DENTRO da mesma transação de quem chama (passar session=db.session).
     - Não faz commit aqui.
+    - Quando houver MovimentacaoEstoque e referencia, aplica proteção contra duplicidade.
     Retorna o codigo_pneumark do produto acabado.
     """
-    if quantidade is None or int(quantidade) <= 0:
+    if quantidade is None:
+        raise ProdutoAcabadoInvalido(
+            "Quantidade ausente para entrada de produto acabado."
+        )
+
+    try:
+        qtd_int = int(quantidade)
+    except Exception:
+        raise ProdutoAcabadoInvalido(
+            f"Quantidade inválida para entrada de produto acabado: {quantidade!r}"
+        )
+
+    if qtd_int <= 0:
         raise ProdutoAcabadoInvalido(
             "Quantidade inválida para entrada de produto acabado."
         )
 
-    sess = session or db.session
-    codigo_conjunto = _resolver_conjunto_por_modelo(modelo)
+    modelo_norm = (modelo or "").strip().upper()
+    if not modelo_norm:
+        raise ProdutoAcabadoInvalido("Modelo ausente para entrada de produto acabado.")
 
-    # trava a linha do conjunto
+    usuario_norm = (usuario or "").strip() or "Sistema"
+    referencia_norm = (referencia or "").strip() or None
+
+    sess = session or db.session
+    codigo_conjunto = _resolver_conjunto_por_modelo(modelo_norm)
+
+    # 1) Trava a linha do conjunto
     fg: Optional[Peca] = sess.execute(
         select(Peca)
         .where(
@@ -413,27 +433,55 @@ def registrar_conclusao_produto_acabado(
 
     if not fg:
         raise ProdutoAcabadoInvalido(
-            f"Conjunto '{codigo_conjunto}' (modelo {modelo}) não encontrado (tipo='conjunto')."
+            f"Conjunto '{codigo_conjunto}' (modelo {modelo_norm}) não encontrado (tipo='conjunto')."
         )
 
-    fg.estoque_atual = float(fg.estoque_atual or 0) + float(int(quantidade))
+    # 2) Proteção contra duplicidade quando houver histórico de movimentação
+    if MovimentacaoEstoque is not None and referencia_norm:
+        mov_existente = sess.execute(
+            select(MovimentacaoEstoque).where(
+                MovimentacaoEstoque.tipo_mov == "entrada",
+                MovimentacaoEstoque.codigo_peca == codigo_conjunto,
+                MovimentacaoEstoque.referencia == referencia_norm,
+            )
+        ).scalar_one_or_none()
+
+        if mov_existente:
+            logger.info(
+                f"Entrada de produto acabado já registrada anteriormente | "
+                f"modelo={modelo_norm} conjunto={codigo_conjunto} referencia={referencia_norm}"
+            )
+            return codigo_conjunto
+
+    # 3) Incrementa saldo do conjunto correto
+    fg.estoque_atual = float(fg.estoque_atual or 0) + float(qtd_int)
     sess.add(fg)
 
-    # (Opcional) registrar movimentação
+    # 4) Registra histórico de movimentação, se o projeto tiver o model
     if MovimentacaoEstoque is not None:
         try:
             mov = MovimentacaoEstoque(
                 tipo_mov="entrada",
                 codigo_peca=codigo_conjunto,
-                quantidade=float(int(quantidade)),
-                referencia=referencia,
-                usuario=usuario,
+                quantidade=float(qtd_int),
+                referencia=referencia_norm,
+                usuario=usuario_norm,
             )
             sess.add(mov)
         except Exception as e:
             logger.warning(
                 f"Falha ao registrar movimentação de entrada (FG) para {codigo_conjunto}: {e}"
             )
+    elif referencia_norm:
+        logger.warning(
+            f"MovimentacaoEstoque indisponível; proteção persistente contra duplicidade não será aplicada "
+            f"para referencia={referencia_norm} conjunto={codigo_conjunto}."
+        )
+
+    logger.info(
+        f"Produto acabado concluído no estoque | "
+        f"modelo={modelo_norm} conjunto={codigo_conjunto} quantidade={qtd_int} referencia={referencia_norm}"
+    )
 
     return codigo_conjunto
 

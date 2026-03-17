@@ -693,22 +693,39 @@ def scan_generic():
                     if getattr(order, "finished_at", None) is None:
                         order.finished_at = datetime.utcnow()
 
-                    # 2. Aciona serviço de estoque
+                    # 2. Dá entrada no produto acabado usando a rotina oficial
                     try:
-                        from app.services.estoque_service import (
-                            update_stock_after_finish,
+                        from app.routes.producao_routes.maquinas_routes.consumo_service import (
+                            registrar_conclusao_produto_acabado,
                         )
 
-                        update_stock_after_finish(order.modelo)
+                        codigo_conjunto = registrar_conclusao_produto_acabado(
+                            modelo=order.modelo,
+                            quantidade=1,
+                            usuario=operador or "Sistema",
+                            referencia=f"GP_FINAL:{order.serial}",
+                            session=db.session,
+                        )
+
                         logger.info(
-                            f"[scan] Stock update triggered for model={order.modelo}"
+                            f"[scan] Produto acabado lançado no estoque | "
+                            f"serial={order.serial} modelo={order.modelo} conjunto={codigo_conjunto}"
                         )
                     except ImportError:
-                        logger.error(
-                            "[scan] Failed to import update_stock_after_finish."
+                        logger.exception(
+                            "[scan] Falha ao importar registrar_conclusao_produto_acabado."
+                        )
+                        raise RuntimeError(
+                            "Falha ao importar o serviço de conclusão do produto acabado."
                         )
                     except Exception as e:
-                        logger.error(f"[scan] update_stock_after_finish failed: {e}")
+                        logger.exception(
+                            f"[scan] Falha ao lançar produto acabado no estoque | "
+                            f"serial={order.serial} modelo={order.modelo}: {e}"
+                        )
+                        raise RuntimeError(
+                            f"Falha ao lançar produto acabado no estoque: {e}"
+                        )
 
                 did_finish = True
                 bench_done = bench
