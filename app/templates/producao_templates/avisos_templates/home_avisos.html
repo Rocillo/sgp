@@ -1,0 +1,338 @@
+{% extends "_base.html" %}
+
+<!-- ====================================================================
+[BLOCO] DOCUMENTO_HTML
+[NOME] block_title
+[RESPONSABILIDADE] Definir o título da página da central de avisos
+==================================================================== -->
+{% block title %}Avisos da Produção — Pneumark SGP{% endblock %}
+<!-- ====================================================================
+[FIM BLOCO] block_title
+==================================================================== -->
+
+<!-- ====================================================================
+[BLOCO] DOCUMENTO_HTML
+[NOME] block_subtitle
+[RESPONSABILIDADE] Definir o subtítulo da tela de avisos
+==================================================================== -->
+{% block subtitle %}Central de Avisos da Produção{% endblock %}
+<!-- ====================================================================
+[FIM BLOCO] block_subtitle
+==================================================================== -->
+
+<!-- ====================================================================
+[BLOCO] DOCUMENTO_HTML
+[NOME] block_head_extra
+[RESPONSABILIDADE] Aplicar estilos locais da tela de avisos
+==================================================================== -->
+{% block head_extra %}
+<style>
+  /* ====================================================================
+  [BLOCO] ESTILO_LOCAL
+  [NOME] avisos_layout
+  [RESPONSABILIDADE] Estrutura visual da tela principal de avisos
+  ==================================================================== */
+  .avisos-wrap{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+
+  .avisos-hero{
+    display:grid;
+    grid-template-columns: 1.3fr .7fr;
+    gap:16px;
+  }
+
+  .avisos-hero-card{
+    background:linear-gradient(180deg, #fff7f7 0%, #ffecec 100%);
+    border:1px solid #ffd2d2;
+    border-radius:24px;
+    padding:22px 24px;
+    box-shadow:0 18px 42px rgba(230,0,0,.08);
+  }
+
+  .avisos-hero-main{
+    display:flex;
+    align-items:flex-start;
+    gap:18px;
+  }
+
+  .avisos-hero-icon{
+    width:64px;
+    height:64px;
+    border-radius:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(180deg, #fff, #ffe0e0);
+    border:1px solid #ffc5c5;
+    color:#c40000;
+    font-size:28px;
+    flex:0 0 auto;
+  }
+
+  .avisos-hero h1{
+    margin:0 0 6px 0;
+    font-size:28px;
+    line-height:1.1;
+    color:#122033;
+  }
+
+  .avisos-hero p{
+    margin:0;
+    color:#5b6d81;
+    font-size:15px;
+    line-height:1.6;
+  }
+
+  .avisos-mini-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:14px;
+  }
+
+  .avisos-mini{
+    background:#fff;
+    border:1px solid #e4ebf3;
+    border-radius:20px;
+    padding:18px 16px;
+    min-height:120px;
+    box-shadow:0 10px 24px rgba(15,23,42,.04);
+  }
+
+  .avisos-mini-label{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:5px 9px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+    background:#f5f7fb;
+    border:1px solid #e2e8f0;
+    color:#4b5d73;
+    margin-bottom:12px;
+  }
+
+  .avisos-mini-num{
+    font-size:34px;
+    font-weight:900;
+    color:#122033;
+    line-height:1;
+    margin-bottom:8px;
+  }
+
+  .avisos-mini-text{
+    font-size:13px;
+    color:#607286;
+    line-height:1.5;
+  }
+
+  .avisos-toolbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+
+  .avisos-toolbar-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+
+  .avisos-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:800;
+    border:1px solid #e3eaf3;
+    background:#fff;
+    color:#41556b;
+  }
+
+  .avisos-chip.is-critical{
+    border-color:#ffc6c6;
+    background:#fff2f2;
+    color:#a10000;
+  }
+
+  .avisos-chip.is-warning{
+    border-color:#ffe2a8;
+    background:#fff8e8;
+    color:#9b6500;
+  }
+
+  .avisos-chip.is-info{
+    border-color:#cfe0ff;
+    background:#f4f8ff;
+    color:#2556a8;
+  }
+
+  .avisos-list{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+
+  .avisos-empty{
+    background:#fff;
+    border:1px dashed #d9e2ec;
+    border-radius:22px;
+    padding:28px 24px;
+    color:#5f7286;
+    font-size:15px;
+  }
+
+  @media (max-width: 980px){
+    .avisos-hero{
+      grid-template-columns:1fr;
+    }
+  }
+
+  @media (max-width: 640px){
+    .avisos-mini-grid{
+      grid-template-columns:1fr;
+    }
+
+    .avisos-hero-main{
+      flex-direction:column;
+    }
+  }
+  /* ====================================================================
+  [FIM BLOCO] avisos_layout
+  ==================================================================== */
+</style>
+{% endblock %}
+<!-- ====================================================================
+[FIM BLOCO] block_head_extra
+==================================================================== -->
+
+<!-- ====================================================================
+[BLOCO] DOCUMENTO_HTML
+[NOME] block_content
+[RESPONSABILIDADE] Renderizar resumo e lista principal de avisos da produção
+==================================================================== -->
+{% block content %}
+<div class="avisos-wrap">
+
+  <div class="toolbar">
+    <div class="breadcrumb" aria-label="Você está em">
+      <a href="{{ url_for('modulos_bp.tela_modulos') }}">Módulos</a> &nbsp;/&nbsp;
+      <a href="{{ url_for('home_producao_bp.home_producao') }}">Produção</a> &nbsp;/&nbsp;
+      <strong>Avisos</strong>
+    </div>
+  </div>
+
+  <section class="avisos-hero">
+    <div class="avisos-hero-card">
+      <div class="avisos-hero-main">
+        <div class="avisos-hero-icon" aria-hidden="true">
+          <i class="fa-solid fa-bell"></i>
+        </div>
+
+        <div>
+          <h1>Central de Avisos da Produção</h1>
+          <p>
+            Acompanhe anomalias operacionais, riscos de parada, gargalos de capacidade
+            produtiva e eventos que exigem atenção do PCP.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="avisos-mini-grid">
+      <div class="avisos-mini">
+        <div class="avisos-mini-label">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          Ativos
+        </div>
+        <div class="avisos-mini-num">{{ avisos_qtd|default(0) }}</div>
+        <div class="avisos-mini-text">
+          Quantidade total de avisos pendentes de tratamento.
+        </div>
+      </div>
+
+      <div class="avisos-mini">
+        <div class="avisos-mini-label">
+          <i class="fa-solid fa-bolt"></i>
+          Status
+        </div>
+        <div class="avisos-mini-num">{{ 'ALERTA' if avisos_qtd|default(0)|int > 0 else 'OK' }}</div>
+        <div class="avisos-mini-text">
+          Situação geral do monitoramento automático da produção.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="avisos-toolbar">
+    <div class="avisos-toolbar-left">
+      <span class="avisos-chip is-critical">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        Críticos
+      </span>
+
+      <span class="avisos-chip is-warning">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        Atenção
+      </span>
+
+      <span class="avisos-chip is-info">
+        <i class="fa-solid fa-circle-info"></i>
+        Informativos
+      </span>
+    </div>
+  </section>
+
+  <section class="avisos-list">
+    {% if avisos and avisos|length > 0 %}
+      {% for aviso in avisos %}
+        {% include "producao_templates/avisos_templates/card_aviso.html" %}
+      {% endfor %}
+    {% else %}
+      <div class="avisos-empty">
+        Nenhum aviso carregado no momento. Quando houver anomalias ou alertas da produção,
+        eles aparecerão aqui.
+      </div>
+    {% endif %}
+  </section>
+
+</div>
+{% endblock %}
+<!-- ====================================================================
+[FIM BLOCO] block_content
+==================================================================== -->
+
+<!-- ====================================================================
+[BLOCO] DOCUMENTO_HTML
+[NOME] block_scripts
+[RESPONSABILIDADE] Reservar scripts futuros da central de avisos
+==================================================================== -->
+{% block scripts %}
+<script>
+  // Tela inicial sem scripts específicos nesta fase.
+</script>
+{% endblock %}
+<!-- ====================================================================
+[FIM BLOCO] block_scripts
+==================================================================== -->
+
+<!-- ====================================================================
+MAPA DO ARQUIVO
+--------------------------------------------------------------------
+DOCUMENTO_HTML: block_title
+DOCUMENTO_HTML: block_subtitle
+DOCUMENTO_HTML: block_head_extra
+DOCUMENTO_HTML: block_content
+DOCUMENTO_HTML: block_scripts
+ESTILO_LOCAL: avisos_layout
+==================================================================== -->

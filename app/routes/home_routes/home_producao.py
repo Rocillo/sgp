@@ -64,12 +64,32 @@ def home_producao():
         breadcrumb_url = "/"
 
     return render_template(
-        "home_templates/home_producao.html", cards=cards, breadcrumb_url=breadcrumb_url
+        "home_templates/home_producao.html",
+        cards=cards,
+        breadcrumb_url=breadcrumb_url,
+        avisos_qtd=3,
+        avisos_href=url_for("avisos_page_bp.home_avisos"),
     )
 
 
 # ====================================================================
 # [FIM BLOCO] home_producao
+# ====================================================================
+
+
+# ====================================================================
+# [BLOCO] FUNÇÃO
+# [NOME] home_avisos_legacy_redirect
+# [RESPONSABILIDADE] Redirecionar rota legada da central de avisos para o blueprint oficial
+# ====================================================================
+@home_producao_bp.route("/avisos-legacy", methods=["GET"])
+@login_required
+def home_avisos_legacy_redirect():
+    return redirect(url_for("avisos_page_bp.home_avisos"), code=302)
+
+
+# ====================================================================
+# [FIM BLOCO] home_avisos_legacy_redirect
 # ====================================================================
 
 

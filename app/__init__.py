@@ -44,9 +44,13 @@ def _try_register(
         mod = importlib.import_module(import_line)
         bp = getattr(mod, attr)
         app.register_blueprint(bp)
-        app.logger.info("[BOOT] Blueprint registrado: %s (%s.%s)", name, import_line, attr)
+        app.logger.info(
+            "[BOOT] Blueprint registrado: %s (%s.%s)", name, import_line, attr
+        )
     except Exception as e:
-        msg = f"[BOOT] Falha ao registrar blueprint: {name} ({import_line}.{attr}) -> {e}"
+        msg = (
+            f"[BOOT] Falha ao registrar blueprint: {name} ({import_line}.{attr}) -> {e}"
+        )
         if required:
             app.logger.exception(msg)
             raise
@@ -116,9 +120,7 @@ def create_app() -> Flask:
     db.init_app(app)
     migrate.init_app(app, db)
 
-
-
-        # ====================================================================
+    # ====================================================================
     # [BLOCO] BLOCO_UTIL
     # [NOME] ensure_db_tables
     # [RESPONSABILIDADE] Criar tabelas automaticamente em ambiente Render, se não existirem
@@ -216,7 +218,9 @@ def create_app() -> Flask:
     _try_register(app, "app.routes.estoque_routes.editar_peca", "editar_peca_bp")
     _try_register(app, "app.routes.estoque_routes.consultar_peca", "consultar_peca_bp")
     _try_register(app, "app.routes.estoque_routes.deletar_peca", "deletar_peca_bp")
-    _try_register(app, "app.routes.estoque_routes.autocomplete_pecas", "autocomplete_bp")
+    _try_register(
+        app, "app.routes.estoque_routes.autocomplete_pecas", "autocomplete_bp"
+    )
     # ====================================================================
     # [FIM BLOCO] blueprints_estoque
     # ====================================================================
@@ -260,7 +264,9 @@ def create_app() -> Flask:
     _try_register(
         app, "app.routes.producao_routes.maquinas_routes.montar_maquinas", "maquinas_bp"
     )
-    _try_register(app, "app.routes.estoque_routes.editar_conjunto", "editar_conjunto_bp")
+    _try_register(
+        app, "app.routes.estoque_routes.editar_conjunto", "editar_conjunto_bp"
+    )
     _try_register(
         app,
         "app.routes.producao_routes.maquinas_routes.imprimir_etiqueta",
@@ -348,9 +354,36 @@ def create_app() -> Flask:
         "app.routes.producao_routes.painel_routes.order_api",
         "gp_painel_order_api_bp",
     )
-    _try_register(app, "app.routes.producao_routes.painel_routes.needs_api", "gp_needs_api_bp")
+    _try_register(
+        app, "app.routes.producao_routes.painel_routes.needs_api", "gp_needs_api_bp"
+    )
     # ====================================================================
     # [FIM BLOCO] blueprints_painel_ao_vivo
+    # ====================================================================
+
+    # 7.1) Avisos
+    # ====================================================================
+    # [BLOCO] BLOCO_UTIL
+    # [NOME] blueprints_avisos
+    # [RESPONSABILIDADE] Registrar blueprints da central de avisos (página, API e ações)
+    # ====================================================================
+    _try_register(
+        app,
+        "app.routes.avisos_routes.avisos_page_routes",
+        "avisos_page_bp",
+    )
+    _try_register(
+        app,
+        "app.routes.avisos_routes.avisos_api_routes",
+        "avisos_api_bp",
+    )
+    _try_register(
+        app,
+        "app.routes.avisos_routes.avisos_action_routes",
+        "avisos_action_bp",
+    )
+    # ====================================================================
+    # [FIM BLOCO] blueprints_avisos
     # ====================================================================
 
     # 8) OMIE
@@ -397,6 +430,10 @@ def create_app() -> Flask:
             GPHipotRun,
             GPWorkOrder,
         )
+
+        from app.models.avisos_models.aviso import Aviso
+        from app.models.avisos_models.aviso_evento import AvisoEvento
+        from app.models.avisos_models.aviso_destinatario import AvisoDestinatario
 
         app.logger.info("[BOOT] Modelos SQLAlchemy importados.")
     except Exception as e:
