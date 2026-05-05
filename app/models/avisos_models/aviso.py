@@ -26,6 +26,8 @@ class Aviso(db.Model):
     modelo = db.Column(db.String(50), nullable=True, index=True)
     origem = db.Column(db.String(80), nullable=True)
 
+    departamento_responsavel = db.Column(db.String(50), nullable=True, index=True)
+
     data_aviso = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     capacidade_atual = db.Column(db.Integer, nullable=True)

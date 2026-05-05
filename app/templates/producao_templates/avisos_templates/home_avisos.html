@@ -15,7 +15,7 @@
 [NOME] block_subtitle
 [RESPONSABILIDADE] Definir o subtítulo da tela de avisos
 ==================================================================== -->
-{% block subtitle %}Central de Avisos da Produção{% endblock %}
+{% block subtitle %}Central de Ocorrências da Produção{% endblock %}
 <!-- ====================================================================
 [FIM BLOCO] block_subtitle
 ==================================================================== -->
@@ -30,7 +30,7 @@
   /* ====================================================================
   [BLOCO] ESTILO_LOCAL
   [NOME] avisos_layout
-  [RESPONSABILIDADE] Estrutura visual da tela principal de avisos
+  [RESPONSABILIDADE] Estrutura visual mínima da tela principal de ocorrências
   ==================================================================== */
   .avisos-wrap{
     display:flex;
@@ -38,108 +38,65 @@
     gap:18px;
   }
 
-  .avisos-hero{
-    display:grid;
-    grid-template-columns: 1.3fr .7fr;
-    gap:16px;
+  .avisos-topo{
+    border:1px solid #d9e2ec;
+    border-radius:16px;
+    background:#ffffff;
+    padding:18px 20px;
   }
 
-  .avisos-hero-card{
-    background:linear-gradient(180deg, #fff7f7 0%, #ffecec 100%);
-    border:1px solid #ffd2d2;
-    border-radius:24px;
-    padding:22px 24px;
-    box-shadow:0 18px 42px rgba(230,0,0,.08);
-  }
-
-  .avisos-hero-main{
-    display:flex;
-    align-items:flex-start;
-    gap:18px;
-  }
-
-  .avisos-hero-icon{
-    width:64px;
-    height:64px;
-    border-radius:20px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:linear-gradient(180deg, #fff, #ffe0e0);
-    border:1px solid #ffc5c5;
-    color:#c40000;
-    font-size:28px;
-    flex:0 0 auto;
-  }
-
-  .avisos-hero h1{
-    margin:0 0 6px 0;
-    font-size:28px;
-    line-height:1.1;
+  .avisos-topo h1{
+    margin:0 0 8px 0;
+    font-size:24px;
+    line-height:1.2;
     color:#122033;
+    font-weight:900;
   }
 
-  .avisos-hero p{
+  .avisos-topo p{
     margin:0;
     color:#5b6d81;
     font-size:15px;
     line-height:1.6;
   }
 
-  .avisos-mini-grid{
+  .avisos-resumo-grid{
     display:grid;
-    grid-template-columns:repeat(2, 1fr);
+    grid-template-columns:repeat(2, minmax(0, 1fr));
     gap:14px;
   }
 
-  .avisos-mini{
-    background:#fff;
-    border:1px solid #e4ebf3;
-    border-radius:20px;
-    padding:18px 16px;
-    min-height:120px;
-    box-shadow:0 10px 24px rgba(15,23,42,.04);
+  .avisos-resumo-card{
+    border:1px solid #d9e2ec;
+    border-radius:16px;
+    background:#ffffff;
+    padding:16px 18px;
   }
 
-  .avisos-mini-label{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    padding:5px 9px;
-    border-radius:999px;
-    font-size:11px;
-    font-weight:800;
-    letter-spacing:.03em;
-    text-transform:uppercase;
-    background:#f5f7fb;
-    border:1px solid #e2e8f0;
-    color:#4b5d73;
-    margin-bottom:12px;
-  }
-
-  .avisos-mini-num{
-    font-size:34px;
+  .avisos-resumo-label{
+    font-size:12px;
     font-weight:900;
-    color:#122033;
-    line-height:1;
+    letter-spacing:.04em;
+    color:#5c7187;
+    text-transform:uppercase;
     margin-bottom:8px;
   }
 
-  .avisos-mini-text{
-    font-size:13px;
+  .avisos-resumo-valor{
+    font-size:28px;
+    font-weight:900;
+    color:#122033;
+    line-height:1.1;
+    margin-bottom:6px;
+  }
+
+  .avisos-resumo-texto{
+    font-size:14px;
     color:#607286;
     line-height:1.5;
   }
 
-  .avisos-toolbar{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    flex-wrap:wrap;
-  }
-
-  .avisos-toolbar-left{
+  .avisos-faixa-filtros{
     display:flex;
     align-items:center;
     gap:10px;
@@ -154,27 +111,9 @@
     border-radius:999px;
     font-size:12px;
     font-weight:800;
-    border:1px solid #e3eaf3;
-    background:#fff;
+    border:1px solid #d9e2ec;
+    background:#ffffff;
     color:#41556b;
-  }
-
-  .avisos-chip.is-critical{
-    border-color:#ffc6c6;
-    background:#fff2f2;
-    color:#a10000;
-  }
-
-  .avisos-chip.is-warning{
-    border-color:#ffe2a8;
-    background:#fff8e8;
-    color:#9b6500;
-  }
-
-  .avisos-chip.is-info{
-    border-color:#cfe0ff;
-    background:#f4f8ff;
-    color:#2556a8;
   }
 
   .avisos-list{
@@ -186,25 +125,16 @@
   .avisos-empty{
     background:#fff;
     border:1px dashed #d9e2ec;
-    border-radius:22px;
-    padding:28px 24px;
+    border-radius:16px;
+    padding:24px 20px;
     color:#5f7286;
     font-size:15px;
+    line-height:1.6;
   }
 
-  @media (max-width: 980px){
-    .avisos-hero{
+  @media (max-width: 780px){
+    .avisos-resumo-grid{
       grid-template-columns:1fr;
-    }
-  }
-
-  @media (max-width: 640px){
-    .avisos-mini-grid{
-      grid-template-columns:1fr;
-    }
-
-    .avisos-hero-main{
-      flex-direction:column;
     }
   }
   /* ====================================================================
@@ -219,7 +149,7 @@
 <!-- ====================================================================
 [BLOCO] DOCUMENTO_HTML
 [NOME] block_content
-[RESPONSABILIDADE] Renderizar resumo e lista principal de avisos da produção
+[RESPONSABILIDADE] Renderizar resumo e lista principal de ocorrências da produção
 ==================================================================== -->
 {% block content %}
 <div class="avisos-wrap">
@@ -228,69 +158,40 @@
     <div class="breadcrumb" aria-label="Você está em">
       <a href="{{ url_for('modulos_bp.tela_modulos') }}">Módulos</a> &nbsp;/&nbsp;
       <a href="{{ url_for('home_producao_bp.home_producao') }}">Produção</a> &nbsp;/&nbsp;
-      <strong>Avisos</strong>
+      <strong>Ocorrências</strong>
     </div>
   </div>
 
-  <section class="avisos-hero">
-    <div class="avisos-hero-card">
-      <div class="avisos-hero-main">
-        <div class="avisos-hero-icon" aria-hidden="true">
-          <i class="fa-solid fa-bell"></i>
-        </div>
+  <section class="avisos-topo">
+    <h1>Central de Ocorrências da Produção</h1>
+    <p>
+      Acompanhe ocorrências geradas pelo monitoramento da produção e registre o histórico
+      operacional de comunicação, tratamento e encerramento.
+    </p>
+  </section>
 
-        <div>
-          <h1>Central de Avisos da Produção</h1>
-          <p>
-            Acompanhe anomalias operacionais, riscos de parada, gargalos de capacidade
-            produtiva e eventos que exigem atenção do PCP.
-          </p>
-        </div>
+  <section class="avisos-resumo-grid">
+    <div class="avisos-resumo-card">
+      <div class="avisos-resumo-label">Ocorrências Ativas</div>
+      <div class="avisos-resumo-valor">{{ avisos_qtd|default(0) }}</div>
+      <div class="avisos-resumo-texto">
+        Quantidade total de ocorrências pendentes de tratamento.
       </div>
     </div>
 
-    <div class="avisos-mini-grid">
-      <div class="avisos-mini">
-        <div class="avisos-mini-label">
-          <i class="fa-solid fa-triangle-exclamation"></i>
-          Ativos
-        </div>
-        <div class="avisos-mini-num">{{ avisos_qtd|default(0) }}</div>
-        <div class="avisos-mini-text">
-          Quantidade total de avisos pendentes de tratamento.
-        </div>
-      </div>
-
-      <div class="avisos-mini">
-        <div class="avisos-mini-label">
-          <i class="fa-solid fa-bolt"></i>
-          Status
-        </div>
-        <div class="avisos-mini-num">{{ 'ALERTA' if avisos_qtd|default(0)|int > 0 else 'OK' }}</div>
-        <div class="avisos-mini-text">
-          Situação geral do monitoramento automático da produção.
-        </div>
+    <div class="avisos-resumo-card">
+      <div class="avisos-resumo-label">Situação Geral</div>
+      <div class="avisos-resumo-valor">{{ 'ALERTA' if avisos_qtd|default(0)|int > 0 else 'OK' }}</div>
+      <div class="avisos-resumo-texto">
+        Situação geral do monitoramento automático da produção.
       </div>
     </div>
   </section>
 
-  <section class="avisos-toolbar">
-    <div class="avisos-toolbar-left">
-      <span class="avisos-chip is-critical">
-        <i class="fa-solid fa-circle-exclamation"></i>
-        Críticos
-      </span>
-
-      <span class="avisos-chip is-warning">
-        <i class="fa-solid fa-triangle-exclamation"></i>
-        Atenção
-      </span>
-
-      <span class="avisos-chip is-info">
-        <i class="fa-solid fa-circle-info"></i>
-        Informativos
-      </span>
-    </div>
+  <section class="avisos-faixa-filtros">
+    <span class="avisos-chip">Capacidade Produtiva</span>
+    <span class="avisos-chip">Origem: Monitoramento Automático</span>
+    <span class="avisos-chip">Histórico Operacional</span>
   </section>
 
   <section class="avisos-list">
@@ -300,7 +201,7 @@
       {% endfor %}
     {% else %}
       <div class="avisos-empty">
-        Nenhum aviso carregado no momento. Quando houver anomalias ou alertas da produção,
+        Nenhuma ocorrência carregada no momento. Quando houver novos alertas operacionais,
         eles aparecerão aqui.
       </div>
     {% endif %}
@@ -315,7 +216,7 @@
 <!-- ====================================================================
 [BLOCO] DOCUMENTO_HTML
 [NOME] block_scripts
-[RESPONSABILIDADE] Reservar scripts futuros da central de avisos
+[RESPONSABILIDADE] Reservar scripts futuros da central de ocorrências
 ==================================================================== -->
 {% block scripts %}
 <script>

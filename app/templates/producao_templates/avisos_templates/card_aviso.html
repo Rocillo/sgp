@@ -46,6 +46,11 @@
   {% set status_label = 'ATENÇÃO' %}
 {% endif %}
 
+{% set ocorrencia_codigo = aviso.ocorrencia_codigo or aviso.codigo or 'OC-—' %}
+{% set tipo_ocorrencia = aviso.tipo_label or aviso.tipo or aviso.titulo or 'Ocorrência' %}
+{% set origem_ocorrencia = aviso.origem or 'Monitoramento Automático' %}
+{% set responsavel_ocorrencia = aviso.departamento_responsavel|default('', true) %}
+
 <article
   class="aviso-item"
   data-codigo-aviso="{{ aviso.codigo }}"
@@ -66,43 +71,82 @@
     </div>
 
     <div class="aviso-body">
-      <div class="aviso-topo">
-        <div class="aviso-faixa-tags">
-          <span
-            class="aviso-selo-status"
-            style="background: {{ selo_fundo }}; border-color: {{ selo_borda }}; color: {{ selo_cor }};"
-          >
-            {{ status_label }}
-          </span>
 
-          <span class="aviso-tag-neutra">
-            <i class="fa-solid fa-industry" aria-hidden="true"></i>
-            {{ aviso.modelo|default('—') }}
-          </span>
+      <!-- ====================================================================
+[BLOCO] CABECALHO_OCORRENCIA
+[NOME] cabecalho_identidade_ocorrencia
+[RESPONSABILIDADE] Exibir identidade principal da ocorrência de forma rastreável
+==================================================================== -->
+<section class="aviso-cabecalho-ocorrencia">
+  <div class="aviso-faixa-principal">
+    <span class="aviso-ocorrencia-codigo">{{ ocorrencia_codigo }}</span>
+    <span
+      class="aviso-selo-status"
+      style="background: {{ selo_fundo }}; border-color: {{ selo_borda }}; color: {{ selo_cor }};"
+    >
+      {{ status_label }}
+    </span>
+  </div>
 
-          <span class="aviso-tag-neutra">
-            <i class="fa-solid fa-wave-square" aria-hidden="true"></i>
-            {{ aviso.origem|default('Monitoramento automático') }}
-          </span>
-        </div>
-      </div>
+  <h3 class="aviso-titulo-ocorrencia">{{ tipo_ocorrencia }}</h3>
 
-      <h3 class="aviso-titulo">{{ aviso.titulo|default('Aviso da Produção') }}</h3>
+  <div class="aviso-meta-principal">
+    <div class="aviso-meta-item">
+      <span class="aviso-meta-chave">Origem</span>
+      <span class="aviso-meta-valor">{{ origem_ocorrencia }}</span>
+    </div>
+
+    <div class="aviso-meta-item">
+      <span class="aviso-meta-chave">Responsável</span>
+      <span class="aviso-meta-valor">
+        {% if responsavel_ocorrencia %}
+          {{ responsavel_ocorrencia|title }}
+        {% else %}
+          —
+        {% endif %}
+      </span>
+    </div>
+
+    <div class="aviso-meta-item">
+      <span class="aviso-meta-chave">Aberta em</span>
+      <span class="aviso-meta-valor">
+        {% if aviso.data_aviso %}
+          {{ aviso.data_aviso.strftime('%d/%m/%Y %H:%M') if aviso.data_aviso.strftime is defined else aviso.data_aviso }}
+        {% else %}
+          —
+        {% endif %}
+      </span>
+    </div>
+
+    <div class="aviso-meta-item">
+      <span class="aviso-meta-chave">Modelo</span>
+      <span class="aviso-meta-valor">{{ aviso.modelo|default('—') }}</span>
+    </div>
+  </div>
+</section>
+<!-- ====================================================================
+[FIM BLOCO] cabecalho_identidade_ocorrencia
+==================================================================== -->
+
       <p class="aviso-resumo">{{ aviso.descricao|default('Sem descrição informada.') }}</p>
 
+      <!-- ====================================================================
+      [BLOCO] DADOS_OCORRENCIA
+      [NOME] bloco_dados_ocorrencia
+      [RESPONSABILIDADE] Exibir dados técnicos essenciais da ocorrência
+      ==================================================================== -->
       <section class="aviso-bloco-tecnico">
-        <div class="aviso-bloco-titulo">DADOS DO AVISO</div>
+        <div class="aviso-bloco-titulo">DADOS DA OCORRÊNCIA</div>
 
         <div class="aviso-grade-tecnica">
           <div class="aviso-linha-tecnica">
-            <span class="aviso-chave">Data do Aviso</span>
-            <span class="aviso-valor">
-              {% if aviso.data_aviso %}
-                {{ aviso.data_aviso.strftime('%d/%m/%Y %H:%M') if aviso.data_aviso.strftime is defined else aviso.data_aviso }}
-              {% else %}
-                —
-              {% endif %}
-            </span>
+            <span class="aviso-chave">Capacidade Atual</span>
+            <span class="aviso-valor">{{ aviso.capacidade_atual|default('—') }}</span>
+          </div>
+
+          <div class="aviso-linha-tecnica">
+            <span class="aviso-chave">Estoque Máximo</span>
+            <span class="aviso-valor">{{ aviso.estoque_maximo|default('—') }}</span>
           </div>
 
           <div class="aviso-linha-tecnica">
@@ -118,17 +162,68 @@
           </div>
 
           <div class="aviso-linha-tecnica">
-            <span class="aviso-chave">Capacidade Atual</span>
-            <span class="aviso-valor">{{ aviso.capacidade_atual|default('—') }}</span>
-          </div>
-
-          <div class="aviso-linha-tecnica">
-            <span class="aviso-chave">Estoque Máximo</span>
-            <span class="aviso-valor">{{ aviso.estoque_maximo|default('—') }}</span>
+            <span class="aviso-chave">Código Técnico</span>
+            <span class="aviso-valor">{{ aviso.codigo|default('—') }}</span>
           </div>
         </div>
       </section>
+      <!-- ====================================================================
+      [FIM BLOCO] bloco_dados_ocorrencia
+      ==================================================================== -->
 
+      <!-- ====================================================================
+      [BLOCO] ACOES_OCORRENCIA
+      [NOME] bloco_acoes_ocorrencia
+      [RESPONSABILIDADE] Permitir comunicação rápida da ocorrência aos setores
+      ==================================================================== -->
+      <div class="aviso-acoes">
+        <button type="button" class="aviso-btn btn-comunicar-aviso" data-setor="compras">Comunicar Compras</button>
+        <button type="button" class="aviso-btn btn-comunicar-aviso" data-setor="qualidade">Comunicar Qualidade</button>
+        <button type="button" class="aviso-btn btn-comunicar-aviso" data-setor="projetos">Comunicar Projetos</button>
+      </div>
+      <!-- ====================================================================
+      [FIM BLOCO] bloco_acoes_ocorrencia
+      ==================================================================== -->
+
+      <!-- ====================================================================
+      [BLOCO] HISTORICO_OCORRENCIA
+      [NOME] bloco_historico_operacional
+      [RESPONSABILIDADE] Exibir trilha operacional vinculada à ocorrência
+      ==================================================================== -->
+      <section class="aviso-bloco-tecnico">
+        <div class="aviso-bloco-titulo">HISTÓRICO OPERACIONAL</div>
+
+        <div class="aviso-historico-lista">
+          {% if aviso.historico %}
+            {% for evento in aviso.historico %}
+              <div class="aviso-historico-item">
+                <div class="aviso-historico-cabecalho">
+                  <span class="aviso-historico-oc">{{ ocorrencia_codigo }}</span>
+                  <span class="aviso-historico-tipo">{{ tipo_ocorrencia }}</span>
+                </div>
+                <div class="aviso-historico-texto">{{ evento }}</div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="aviso-historico-item">
+              <div class="aviso-historico-cabecalho">
+                <span class="aviso-historico-oc">{{ ocorrencia_codigo }}</span>
+                <span class="aviso-historico-tipo">{{ tipo_ocorrencia }}</span>
+              </div>
+              <div class="aviso-historico-texto">Nenhum evento operacional registrado até o momento.</div>
+            </div>
+          {% endif %}
+        </div>
+      </section>
+      <!-- ====================================================================
+      [FIM BLOCO] bloco_historico_operacional
+      ==================================================================== -->
+
+      <!-- ====================================================================
+      [BLOCO] PECAS_CRITICAS
+      [NOME] bloco_pecas_criticas
+      [RESPONSABILIDADE] Exibir peças críticas relacionadas à recomposição
+      ==================================================================== -->
       <section class="aviso-bloco-tecnico">
         <div class="aviso-bloco-titulo">PEÇAS CRÍTICAS PARA RECOMPOSIÇÃO</div>
 
@@ -151,25 +246,10 @@
           {% endfor %}
         </div>
       </section>
+      <!-- ====================================================================
+      [FIM BLOCO] bloco_pecas_criticas
+      ==================================================================== -->
 
-      <div class="aviso-acoes">
-        <button type="button" class="aviso-btn btn-comunicar-aviso" data-setor="compras">Comunicar Compras</button>
-        <button type="button" class="aviso-btn btn-comunicar-aviso" data-setor="qualidade">Comunicar Qualidade</button>
-        <button type="button" class="aviso-btn btn-comunicar-aviso" data-setor="projetos">Comunicar Projetos</button>
-      </div>
-
-      <section class="aviso-bloco-tecnico">
-        <div class="aviso-bloco-titulo">HISTÓRICO OPERACIONAL</div>
-        <div class="aviso-historico-lista">
-          {% if aviso.historico %}
-            {% for evento in aviso.historico %}
-              <div class="aviso-historico-item">{{ evento }}</div>
-            {% endfor %}
-          {% else %}
-            <div class="aviso-historico-item">Comunicado por: —</div>
-          {% endif %}
-        </div>
-      </section>
     </div>
   </div>
 </article>
@@ -206,23 +286,33 @@
     flex:1 1 auto;
   }
 
-  .aviso-topo{
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-    gap:12px;
-    margin-bottom:10px;
+  .aviso-cabecalho-ocorrencia{
+    margin-bottom:14px;
   }
 
-  .aviso-faixa-tags{
+  .aviso-faixa-principal{
     display:flex;
     align-items:center;
-    gap:8px;
+    gap:10px;
     flex-wrap:wrap;
+    margin-bottom:8px;
   }
 
-  .aviso-selo-status,
-  .aviso-tag-neutra{
+  .aviso-ocorrencia-codigo{
+    display:inline-flex;
+    align-items:center;
+    padding:6px 10px;
+    border-radius:999px;
+    border:1px solid #cfd9e5;
+    background:#ffffff;
+    color:#102033;
+    font-size:13px;
+    font-weight:900;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+  }
+
+  .aviso-selo-status{
     display:inline-flex;
     align-items:center;
     gap:6px;
@@ -238,12 +328,39 @@
     color:#31485f;
   }
 
-  .aviso-titulo{
-    margin:0 0 6px 0;
-    font-size:17px;
-    line-height:1.25;
+  .aviso-titulo-ocorrencia{
+    margin:0 0 10px 0;
+    font-size:22px;
+    line-height:1.2;
     color:#102033;
     font-weight:900;
+  }
+
+  .aviso-meta-principal{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+    gap:10px 16px;
+  }
+
+  .aviso-meta-item{
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+  }
+
+  .aviso-meta-chave{
+    font-size:11px;
+    font-weight:800;
+    color:#5c7187;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+
+  .aviso-meta-valor{
+    font-size:14px;
+    font-weight:800;
+    color:#14283d;
+    line-height:1.4;
   }
 
   .aviso-resumo{
@@ -297,6 +414,77 @@
     line-height:1.35;
   }
 
+  .aviso-acoes{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:14px;
+  }
+
+  .aviso-btn{
+    min-height:40px;
+    padding:0 14px;
+    border:1px solid #bccbdb;
+    border-radius:10px;
+    background:#ffffff;
+    color:#11253a;
+    font-size:13px;
+    font-weight:900;
+    letter-spacing:.01em;
+    cursor:pointer;
+    transition:.15s ease;
+  }
+
+  .aviso-btn:hover{
+    background:#eef3f8;
+  }
+
+  .aviso-btn:disabled{
+    cursor:not-allowed;
+    opacity:.72;
+  }
+
+  .aviso-historico-lista{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+
+  .aviso-historico-item{
+    border:1px solid #d6dfeb;
+    border-radius:10px;
+    background:#fff;
+    padding:10px 12px;
+  }
+
+  .aviso-historico-cabecalho{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:6px;
+  }
+
+  .aviso-historico-oc{
+    font-size:12px;
+    font-weight:900;
+    color:#102033;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+  }
+
+  .aviso-historico-tipo{
+    font-size:12px;
+    font-weight:800;
+    color:#516579;
+  }
+
+  .aviso-historico-texto{
+    font-size:13px;
+    line-height:1.55;
+    color:#314960;
+  }
+
   .aviso-pecas-lista{
     display:flex;
     flex-direction:column;
@@ -340,54 +528,9 @@
     color:#40586f;
   }
 
-  .aviso-acoes{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    margin-top:14px;
-  }
-
-  .aviso-btn{
-    min-height:40px;
-    padding:0 14px;
-    border:1px solid #bccbdb;
-    border-radius:10px;
-    background:#ffffff;
-    color:#11253a;
-    font-size:13px;
-    font-weight:900;
-    letter-spacing:.01em;
-    cursor:pointer;
-    transition:.15s ease;
-  }
-
-  .aviso-btn:hover{
-    background:#eef3f8;
-  }
-
-  .aviso-btn:disabled{
-    cursor:not-allowed;
-    opacity:.72;
-  }
-
-  .aviso-historico-lista{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-  }
-
-  .aviso-historico-item{
-    border:1px solid #d6dfeb;
-    border-radius:10px;
-    background:#fff;
-    padding:10px 12px;
-    font-size:13px;
-    line-height:1.5;
-    color:#314960;
-  }
-
   @media (max-width: 860px){
-    .aviso-grade-tecnica{
+    .aviso-grade-tecnica,
+    .aviso-meta-principal{
       grid-template-columns:1fr;
     }
   }
@@ -423,6 +566,8 @@
     const botoes = card.querySelectorAll(".btn-comunicar-aviso");
     const historico = card.querySelector(".aviso-historico-lista");
     const badge = card.querySelector(".aviso-selo-status");
+    const ocorrenciaCodigo = card.querySelector(".aviso-ocorrencia-codigo")?.textContent?.trim() || "OC-—";
+    const tipoOcorrencia = card.querySelector(".aviso-titulo-ocorrencia")?.textContent?.trim() || "Ocorrência";
 
     async function comunicar(setor, botao) {
       botao.disabled = true;
@@ -451,10 +596,16 @@
         card.style.background = "#fffaf2";
 
         if (historico) {
-          const linha = document.createElement("div");
-          linha.className = "aviso-historico-item";
-          linha.textContent = `Comunicado por: ${data.usuario} às ${data.quando} ao ${data.setor}.`;
-          historico.prepend(linha);
+          const item = document.createElement("div");
+          item.className = "aviso-historico-item";
+          item.innerHTML = `
+            <div class="aviso-historico-cabecalho">
+              <span class="aviso-historico-oc">${ocorrenciaCodigo}</span>
+              <span class="aviso-historico-tipo">${tipoOcorrencia}</span>
+            </div>
+            <div class="aviso-historico-texto">Evento: comunicado ao setor ${data.setor} por ${data.usuario} em ${data.quando}.</div>
+          `;
+          historico.prepend(item);
         }
 
         if (data.whatsapp_web_url) {

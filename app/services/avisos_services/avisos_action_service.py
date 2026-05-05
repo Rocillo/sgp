@@ -78,7 +78,7 @@ def marcar_aviso_como_lido(
 # ====================================================================
 # [BLOCO] FUNÇÃO
 # [NOME] comunicar_setor
-# [RESPONSABILIDADE] Persistir comunicação do aviso para um setor, registrar evento operacional e preparar link externo do WhatsApp Web
+# [RESPONSABILIDADE] Persistir comunicação do aviso para um setor, definir responsável da ocorrência e preparar link externo do WhatsApp Web
 # ====================================================================
 def comunicar_setor(
     codigo_aviso: str,
@@ -115,6 +115,20 @@ def comunicar_setor(
             comunicado_em=agora,
         )
         db.session.add(destinatario)
+
+    if not (aviso.departamento_responsavel or "").strip():
+        aviso.departamento_responsavel = setor_normalizado
+
+        evento_responsavel = AvisoEvento(
+            aviso_id=aviso.id,
+            tipo_evento="responsavel_definido",
+            usuario_id=usuario_id,
+            usuario_nome=usuario_nome,
+            destino=setor_normalizado,
+            observacao=f"responsável definido como {setor_normalizado}",
+            created_at=agora,
+        )
+        db.session.add(evento_responsavel)
 
     evento = AvisoEvento(
         aviso_id=aviso.id,
@@ -153,6 +167,7 @@ def comunicar_setor(
         "usuario": usuario_nome,
         "quando": agora.strftime("%d/%m/%Y %H:%M"),
         "persistido": True,
+        "departamento_responsavel": aviso.departamento_responsavel,
         "whatsapp_ativo": whatsapp_payload.get("whatsapp_ativo"),
         "whatsapp_simulado": whatsapp_payload.get("whatsapp_simulado"),
         "destino_whatsapp_setor": whatsapp_payload.get("destino_setor"),
