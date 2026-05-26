@@ -386,6 +386,21 @@ def create_app() -> Flask:
     # [FIM BLOCO] blueprints_avisos
     # ====================================================================
 
+    # 7.2) Indicadores
+    # ====================================================================
+    # [BLOCO] BLOCO_UTIL
+    # [NOME] blueprints_indicadores
+    # [RESPONSABILIDADE] Registrar blueprint da API de indicadores gerenciais de produção
+    # ====================================================================
+    _try_register(
+        app,
+        "app.routes.indicadores_routes.indicadores_routes",
+        "indicadores_api_bp",
+    )
+    # ====================================================================
+    # [FIM BLOCO] blueprints_indicadores
+    # ====================================================================
+
     # 8) OMIE
     # ====================================================================
     # [BLOCO] BLOCO_UTIL
@@ -434,6 +449,14 @@ def create_app() -> Flask:
         from app.models.avisos_models.aviso import Aviso
         from app.models.avisos_models.aviso_evento import AvisoEvento
         from app.models.avisos_models.aviso_destinatario import AvisoDestinatario
+
+        try:
+            from app.models_sqla.indicadores_models import (
+                GPProductionAlarm,
+                GPWorkingCalendar,
+            )
+        except Exception as e:
+            app.logger.warning("[BOOT] Modelos de indicadores indisponíveis: %s", e)
 
         app.logger.info("[BOOT] Modelos SQLAlchemy importados.")
     except Exception as e:

@@ -1,4 +1,5 @@
 # app/routes/home_routes/home_producao.py
+from datetime import date
 from flask import Blueprint, render_template, url_for, redirect
 from flask_login import login_required
 
@@ -101,22 +102,40 @@ def home_avisos_legacy_redirect():
 @home_producao_bp.route("/placeholder/<slug>", methods=["GET"])
 def placeholder(slug):
 
-    # novo tratamento para a tela de indicadores
+    # ====================================================================
+    # [BLOCO] INDICADORES
+    # [RESPONSABILIDADE] Renderizar tela gerencial de indicadores
+    # ====================================================================
     if slug == "indicadores":
-        return render_template("indicadores_templates/cep.html")
+        hoje = date.today()
+        data_inicio = hoje.replace(day=1)
+
+        return render_template(
+            "indicadores_templates/producao_indicadores.html",
+            indicadores_api_url=url_for("indicadores_api_bp.api_indicadores_producao"),
+            filtros_iniciais={
+                "data_inicio": data_inicio.isoformat(),
+                "data_fim": hoje.isoformat(),
+            },
+        )
+    # ====================================================================
+    # [FIM BLOCO] INDICADORES
+    # ====================================================================
 
     mapping = {
         "montar-maquina": ("maquinas_bp.pagina_montagem", {}),
         "painel-visual": (
             None,
             {"redirect": "/producao/gp/painel/"},
-        ),  # segurança extra
+        ),
     }
 
     if slug in mapping:
         endpoint, params = mapping[slug]
+
         if endpoint:
             return redirect(url_for(endpoint, **params), code=302)
+
         if "redirect" in params:
             return redirect(params["redirect"], code=302)
 

@@ -3,6 +3,9 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from sqlalchemy.exc import IntegrityError
 from app import db
 from app.models_sqla import Peca, EstruturaMaquina
+from app.services.indicadores_services.alarmes_service import (
+    reconciliar_alarmes_abertos_por_componente,
+)
 
 # ====================================================================
 # [BLOCO] BLUEPRINT
@@ -53,6 +56,12 @@ def editar_conjunto(conjunto_id):
         conjunto.descricao = nova_desc
         if novo_estoq is not None and novo_estoq != "":
             conjunto.estoque_atual = novo_estoq
+
+            reconciliar_alarmes_abertos_por_componente(
+                session=db.session,
+                codigo_peca=conjunto.codigo_pneumark,
+                estoque_atual=conjunto.estoque_atual,
+            )
 
         # --------- 2) Atualiza ESTRUTURA (BOM) ---------
         # ====================================================================

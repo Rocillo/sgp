@@ -1,0 +1,289 @@
+{% extends "_base.html" %}
+
+{% block title %}Indicadores de Produção{% endblock %}
+
+{% block head_extra %}
+<style>
+  .indicadores-shell {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .indicadores-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-end;
+    margin-bottom: 20px;
+  }
+
+  .indicadores-title h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+  }
+
+  .indicadores-title p {
+    margin: 6px 0 0;
+    color: #666;
+  }
+
+  .indicadores-filter {
+    display: flex;
+    gap: 10px;
+    align-items: end;
+    flex-wrap: wrap;
+  }
+
+  .indicadores-filter label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #555;
+  }
+
+  .indicadores-filter input {
+    min-width: 150px;
+  }
+
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  .kpi-card,
+  .indicador-section {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  }
+
+  .kpi-card {
+    padding: 16px;
+  }
+
+  .kpi-label {
+    font-size: 12px;
+    color: #777;
+    font-weight: 700;
+  }
+
+  .kpi-value {
+    margin-top: 8px;
+    font-size: 26px;
+    line-height: 1;
+    font-weight: 800;
+  }
+
+  .indicador-section {
+    padding: 18px;
+    margin-bottom: 18px;
+  }
+
+  .section-title {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .section-title h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  .chart-wrap {
+    position: relative;
+    height: 320px;
+    margin-top: 14px;
+  }
+
+  .table-responsive {
+    max-height: 420px;
+  }
+
+  .status-muted {
+    color: #777;
+    font-size: 13px;
+  }
+
+  @media (max-width: 768px) {
+    .indicadores-header {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .indicadores-shell {
+      padding: 14px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div
+  class="indicadores-shell"
+  id="indicadoresApp"
+  data-api-url="{{ indicadores_api_url }}"
+  data-data-inicio="{{ filtros_iniciais.data_inicio }}"
+  data-data-fim="{{ filtros_iniciais.data_fim }}"
+>
+  <div class="indicadores-header">
+    <div class="indicadores-title">
+      <h1>Indicadores Gerenciais de Produção</h1>
+      <p>Volume, tempo médio, alarmes de componentes e ociosidade operacional.</p>
+    </div>
+
+    <form class="indicadores-filter" id="formFiltrosIndicadores">
+      <div>
+        <label for="dataInicio">Data início</label>
+        <input class="form-control" type="date" id="dataInicio" name="data_inicio">
+      </div>
+
+      <div>
+        <label for="dataFim">Data fim</label>
+        <input class="form-control" type="date" id="dataFim" name="data_fim">
+      </div>
+
+      <button class="btn btn-primary" type="submit" id="btnAplicarFiltros">
+        Aplicar
+      </button>
+    </form>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Máquinas Finalizadas</div>
+      <div class="kpi-value" id="kpiFinalizadas">--</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">Tempo Médio Limpo</div>
+      <div class="kpi-value" id="kpiTempoMedio">--</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">Anomalias de Processo</div>
+      <div class="kpi-value" id="kpiAnomalias">--</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">Dias Produtivos</div>
+      <div class="kpi-value" id="kpiDiasProdutivos">--</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">Dias Ociosos</div>
+      <div class="kpi-value" id="kpiDiasOciosos">--</div>
+    </div>
+  </div>
+
+  <section class="indicador-section">
+    <div class="section-title">
+      <h2>Volume de Produção por Modelo e Mês</h2>
+      <span class="status-muted" id="statusVolume">--</span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-sm table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Mês</th>
+            <th>PM2100</th>
+            <th>PM2200</th>
+            <th>PM700</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyVolume"></tbody>
+      </table>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="chartVolume"></canvas>
+    </div>
+  </section>
+
+  <section class="indicador-section">
+    <div class="section-title">
+      <h2>Tempo Médio de Montagem</h2>
+      <span class="status-muted" id="statusTempoMedio">--</span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-sm table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Mês</th>
+            <th>PM2100</th>
+            <th>PM2200</th>
+            <th>PM700</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyTempoMedio"></tbody>
+      </table>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="chartTempoMedio"></canvas>
+    </div>
+  </section>
+
+  <section class="indicador-section">
+    <div class="section-title">
+      <h2>Alarmes por Falta de Componentes</h2>
+      <span class="status-muted" id="statusAlarmes">--</span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-sm table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Data/Hora</th>
+            <th>Bancada</th>
+            <th>Modelo</th>
+            <th>Componente</th>
+            <th>Referência</th>
+            <th>Downtime</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyAlarmes"></tbody>
+      </table>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="chartParetoAlarmes"></canvas>
+    </div>
+  </section>
+
+  <section class="indicador-section">
+    <div class="section-title">
+      <h2>Capacidade Ociosa</h2>
+      <span class="status-muted" id="statusOciosidade">--</span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-sm table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Indicador / Dia</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyOciosidade"></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/indicadores/producao_indicadores.js') }}"></script>
+{% endblock %}

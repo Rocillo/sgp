@@ -385,6 +385,31 @@ def api_montar():
 
     except EstoqInsuficiente as e:
         db.session.rollback()
+
+        try:
+            from app.services.indicadores_services.alarmes_service import (
+                registrar_alarmes_falta_componentes,
+            )
+
+            registrar_alarmes_falta_componentes(
+                session=db.session,
+                modelo=modelo,
+                codigo_conjunto=codigo_conjunto,
+                referencia=referencia,
+                bancada_logica="sep",
+                faltas=e.faltas,
+                origem="montagem_api",
+            )
+
+            db.session.commit()
+
+        except Exception as alarm_error:
+            db.session.rollback()
+            logger.exception(
+                "[INDICADORES] Falha ao registrar alarme de falta de componente: %s",
+                alarm_error,
+            )
+
         faltas = [
             {
                 "codigo_peca": f.codigo_peca,
@@ -393,10 +418,12 @@ def api_montar():
             }
             for f in e.faltas
         ]
+
         return (
             jsonify({"ok": False, "motivo": "ESTOQUE_INSUFICIENTE", "faltas": faltas}),
             409,
         )
+
     except Exception as e:
         db.session.rollback()
         logger.exception("Erro ao salvar montagens/reserva")

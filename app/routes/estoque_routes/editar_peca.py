@@ -5,7 +5,9 @@ from app import db
 from app.models_sqla import Peca, EstruturaMaquina
 from sqlalchemy.exc import IntegrityError
 from app.routes.producao_routes.painel_routes.rop_service import handle_rop_on_change
-
+from app.services.indicadores_services.alarmes_service import (
+    reconciliar_alarmes_abertos_por_componente,
+)
 
 # ====================================================================
 # [BLOCO] BLUEPRINT
@@ -51,6 +53,11 @@ def editar_peca(peca_id):
             )
             peca.estoque_atual = int(
                 request.form.get("estoque_atual") or peca.estoque_atual or 0
+            )
+            reconciliar_alarmes_abertos_por_componente(
+                session=db.session,
+                codigo_peca=peca.codigo_pneumark,
+                estoque_atual=peca.estoque_atual,
             )
             peca.margem = float(request.form.get("margem") or peca.margem or 0)
             peca.custo = float(request.form.get("custo") or peca.custo or 0)
