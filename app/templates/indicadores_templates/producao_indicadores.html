@@ -1,126 +1,313 @@
 {% extends "_base.html" %}
 
-{% block title %}Indicadores de Produção{% endblock %}
+{% block title %}Indicadores de Produção - Cyber Dashboard{% endblock %}
 
-{% block head_extra %}
+{% block head_extra %} 
 <style>
-  .indicadores-shell {
-    max-width: 1320px;
-    margin: 0 auto;
-    padding: 24px;
+  /* ====================================================================
+     SISTEMA DE DESIGN NEO-GLOW TECH (CSS AVANÇADO)
+     ==================================================================== */
+  :root {
+    --bg-main: #f8fafc;
+    --bg-card: rgba(255, 255, 255, 0.85);
+    --border-glow: rgba(0, 180, 216, 0.15);
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --cyber-cyan: #00b4d8;
+    --cyber-purple: #4facfe;
+    --cyber-green: #10b981;
+    --cyber-orange: #f59e0b;
+    --cyber-red: #ef4444;
+    --glass-blur: blur(12px);
   }
 
+  body {
+    background-color: var(--bg-main) !important;
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  .indicadores-shell {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 32px;
+    background: radial-gradient(circle at 50% -20%, rgba(79, 172, 254, 0.12), transparent 50%);
+  }
+
+  /* Header e Filtros Futuristas */
   .indicadores-header {
     display: flex;
     justify-content: space-between;
-    gap: 16px;
-    align-items: flex-end;
-    margin-bottom: 20px;
+    gap: 24px;
+    align-items: center;
+    margin-bottom: 32px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 24px;
   }
 
   .indicadores-title h1 {
     margin: 0;
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 800;
+    background: linear-gradient(135deg, #fff 30%, var(--cyber-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
   }
 
   .indicadores-title p {
-    margin: 6px 0 0;
-    color: #666;
+    margin: 8px 0 0;
+    color: var(--text-secondary);
+    font-size: 14px;
   }
 
   .indicadores-filter {
     display: flex;
-    gap: 10px;
-    align-items: end;
-    flex-wrap: wrap;
+    gap: 14px;
+    align-items: flex-end;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 12px 20px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: var(--glass-blur);
   }
 
   .indicadores-filter label {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
-    color: #555;
+    color: var(--cyber-cyan);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    display: block;
   }
 
   .indicadores-filter input {
-    min-width: 150px;
+    background: #fff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #1e293b !important;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    transition: all 0.3s ease;
   }
 
-  .kpi-grid {
+  .indicadores-filter input:focus {
+    border-color: var(--cyber-cyan) !important;
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.2) !important;
+    outline: none;
+  }
+
+  .btn-cyber {
+    background: linear-gradient(135deg, var(--cyber-purple), var(--cyber-cyan));
+    border: none;
+    color: #000;
+    font-weight: 700;
+    padding: 9px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-cyber:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 242, 254, 0.4);
+    opacity: 0.95;
+  }
+
+  /* Grid Cockpit Tridimensional */
+  .dashboard-layout {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    gap: 14px;
-    margin-bottom: 18px;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 24px;
   }
 
-  .kpi-card,
-  .indicador-section {
-    background: #fff;
-    border: 1px solid #e8e8e8;
-    border-radius: 14px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  .kpi-wrapper {
+    grid-column: span 12;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+  }
+
+  /* Cards Estilo Glassmorphism Premium */
+  .kpi-card, .indicador-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glow);
+    border-radius: 20px;
+    backdrop-filter: var(--glass-blur);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .kpi-card::before, .indicador-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .kpi-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    border-color: rgba(0, 242, 254, 0.4);
+    box-shadow: 0 12px 40px rgba(0, 242, 254, 0.1);
   }
 
   .kpi-card {
-    padding: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   .kpi-label {
     font-size: 12px;
-    color: #777;
-    font-weight: 700;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
   .kpi-value {
-    margin-top: 8px;
-    font-size: 26px;
-    line-height: 1;
+    margin-top: 16px;
+    font-size: 36px;
     font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(135deg, #fff, var(--text-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
+  /* Cores específicas de Brilho dos KPIs */
+  #kpiFinalizadas { background: linear-gradient(135deg, #fff, var(--cyber-green)); -webkit-background-clip: text; }
+  #kpiTempoMedio { background: linear-gradient(135deg, #fff, var(--cyber-cyan)); -webkit-background-clip: text; }
+  #kpiAnomalias { background: linear-gradient(135deg, #fff, var(--cyber-red)); -webkit-background-clip: text; }
+
+  /* Seções de Gráfico e Tabelas */
   .indicador-section {
-    padding: 18px;
-    margin-bottom: 18px;
+    padding: 24px;
+    grid-column: span 6; /* Divide em duas colunas no desktop */
   }
 
-  .section-title {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    align-items: center;
-    margin-bottom: 12px;
+  .indicador-section.full-width {
+    grid-column: span 12;
   }
 
   .section-title h2 {
     margin: 0;
     font-size: 18px;
-    font-weight: 800;
+    font-weight: 700;
+    color: var(--text-primary) !important;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title h2::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 18px;
+    background: var(--cyber-cyan);
+    border-radius: 4px;
+    box-shadow: 0 0 8px var(--cyber-cyan);
+  }
+
+  .status-muted {
+    color: var(--cyber-cyan);
+    background: rgba(0, 242, 254, 0.08);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  /* Customização de Tabelas de Luxo */
+  .table-responsive {
+    max-height: 300px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .table-cyber {
+    color: var(--text-primary) !important;
+    margin-bottom: 0 !important;
+  }
+
+  .table-cyber thead th {
+    background: rgba(16, 24, 48, 0.9) !important;
+    color: var(--cyber-cyan) !important;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.05) !important;
+  }
+
+  .table-cyber tbody td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+    font-size: 13px;
+    background: transparent !important;
+  }
+
+  .table-cyber tbody tr:hover td {
+    background: rgba(255, 255, 255, 0.02) !important;
+    color: #fff;
   }
 
   .chart-wrap {
     position: relative;
-    height: 320px;
-    margin-top: 14px;
+    height: 280px;
+    margin-top: 20px;
+    background: rgba(0, 0, 0, 0.15);
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.02);
   }
 
-  .table-responsive {
-    max-height: 420px;
+  /* Efeito luminoso de pulso de Alarme */
+  .glow-row {
+    animation: alarmPulse 2s infinite ease-in-out;
+    background: rgba(255, 0, 85, 0.05) !important;
+  }
+  @keyframes alarmPulse {
+    0% { box-shadow: inset 0 0 0px rgba(255, 0, 85, 0); }
+    50% { box-shadow: inset 0 0 15px rgba(255, 0, 85, 0.15); }
+    100% { box-shadow: inset 0 0 0px rgba(255, 0, 85, 0); }
   }
 
-  .status-muted {
-    color: #777;
-    font-size: 13px;
+  /* Efeito de Carregamento Skeleton */
+  .skeleton {
+    background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+    background-size: 200% 100%;
+    animation: loadingSkeleton 1.5s infinite;
+    border-radius: 4px;
+    display: inline-block;
+    height: 20px;
+    width: 80%;
+  }
+  @keyframes loadingSkeleton {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Responsividade Inteligente */
+  @media (max-width: 1024px) {
+    .indicador-section { grid-column: span 12; }
   }
 
   @media (max-width: 768px) {
-    .indicadores-header {
-      align-items: stretch;
-      flex-direction: column;
-    }
-
-    .indicadores-shell {
-      padding: 14px;
-    }
+    .indicadores-header { flex-direction: column; align-items: stretch; }
+    .indicadores-filter { flex-direction: column; align-items: stretch; }
+    .indicadores-shell { padding: 16px; }
   }
 </style>
 {% endblock %}
@@ -133,10 +320,11 @@
   data-data-inicio="{{ filtros_iniciais.data_inicio }}"
   data-data-fim="{{ filtros_iniciais.data_fim }}"
 >
+  <!-- Topbar Principal -->
   <div class="indicadores-header">
     <div class="indicadores-title">
       <h1>Indicadores Gerenciais de Produção</h1>
-      <p>Volume, tempo médio, alarmes de componentes e ociosidade operacional.</p>
+      <p>Painel cibernético de monitoramento operacional e ociosidade em tempo real.</p>
     </div>
 
     <form class="indicadores-filter" id="formFiltrosIndicadores">
@@ -150,140 +338,515 @@
         <input class="form-control" type="date" id="dataFim" name="data_fim">
       </div>
 
-      <button class="btn btn-primary" type="submit" id="btnAplicarFiltros">
-        Aplicar
+      <button class="btn-cyber" type="submit" id="btnAplicarFiltros">
+        Sincronizar
       </button>
     </form>
   </div>
 
-  <div class="kpi-grid">
-    <div class="kpi-card">
-      <div class="kpi-label">Máquinas Finalizadas</div>
-      <div class="kpi-value" id="kpiFinalizadas">--</div>
+  <!-- Dashboard Grid -->
+  <div class="dashboard-layout">
+    
+    <!-- Linha de KPIs de Controle -->
+    <div class="kpi-wrapper">
+      <div class="kpi-card">
+        <div class="kpi-label">Máquinas Finalizadas</div>
+        <div class="kpi-value counter" id="kpiFinalizadas">--</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Tempo Médio Limpo</div>
+        <div class="kpi-value" id="kpiTempoMedio">--</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Anomalias de Processo</div>
+        <div class="kpi-value counter" id="kpiAnomalias">--</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Dias Produtivos</div>
+        <div class="kpi-value counter" id="kpiDiasProdutivos">--</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Dias Ociosos</div>
+        <div class="kpi-value counter" id="kpiDiasOciosos">--</div>
+      </div>
     </div>
 
-    <div class="kpi-card">
-      <div class="kpi-label">Tempo Médio Limpo</div>
-      <div class="kpi-value" id="kpiTempoMedio">--</div>
-    </div>
+    <!-- Seção: Volume de Produção -->
+    <section class="indicador-section">
+      <div class="section-title d-flex justify-content-between align-items-center">
+        <h2>Volume de Produção</h2>
+        <span class="status-muted" id="statusVolume">--</span>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-cyber table-hover align-middle">
+          <thead>
+            <tr>
+              <th>Mês</th>
+              <th>PM2100</th>
+              <th>PM2200</th>
+              <th>PM700</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyVolume"></tbody>
+        </table>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="chartVolume"></canvas>
+      </div>
+    </section>
 
-    <div class="kpi-card">
-      <div class="kpi-label">Anomalias de Processo</div>
-      <div class="kpi-value" id="kpiAnomalias">--</div>
-    </div>
+    <!-- Seção: Tempo Médio -->
+    <section class="indicador-section">
+      <div class="section-title d-flex justify-content-between align-items-center">
+        <h2>Tempo Médio de Montagem</h2>
+        <span class="status-muted" id="statusTempoMedio">--</span>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-cyber table-hover align-middle">
+          <thead>
+            <tr>
+              <th>Mês</th>
+              <th>PM2100</th>
+              <th>PM2200</th>
+              <th>PM700</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyTempoMedio"></tbody>
+        </table>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="chartTempoMedio"></canvas>
+      </div>
+    </section>
 
-    <div class="kpi-card">
-      <div class="kpi-label">Dias Produtivos</div>
-      <div class="kpi-value" id="kpiDiasProdutivos">--</div>
-    </div>
+    <!-- Seção: Alarmes (Ocupa largura total para formato wide de logs) -->
+    <section class="indicador-section full-width">
+      <div class="section-title d-flex justify-content-between align-items-center">
+        <h2>Alarmes por Falta de Componentes</h2>
+        <span class="status-muted" id="statusAlarmes">--</span>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-cyber table-hover align-middle">
+          <thead>
+            <tr>
+              <th>Data/Hora</th>
+              <th>Bancada</th>
+              <th>Modelo</th>
+              <th>Componente</th>
+              <th>Referência</th>
+              <th>Downtime</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyAlarmes"></tbody>
+        </table>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="chartParetoAlarmes"></canvas>
+      </div>
+    </section>
 
-    <div class="kpi-card">
-      <div class="kpi-label">Dias Ociosos</div>
-      <div class="kpi-value" id="kpiDiasOciosos">--</div>
-    </div>
+    <!-- Seção: Capacidade Ociosa -->
+    <section class="indicador-section full-width">
+      <div class="section-title d-flex justify-content-between align-items-center">
+        <h2>Capacidade Ociosa / Linha Histórica</h2>
+        <span class="status-muted" id="statusOciosidade">--</span>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-cyber table-hover align-middle">
+          <thead>
+            <tr>
+              <th>Indicador / Dia</th>
+              <th>Valor / Detalhe</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyOciosidade"></tbody>
+        </table>
+      </div>
+    </section>
+
   </div>
-
-  <section class="indicador-section">
-    <div class="section-title">
-      <h2>Volume de Produção por Modelo e Mês</h2>
-      <span class="status-muted" id="statusVolume">--</span>
-    </div>
-
-    <div class="table-responsive">
-      <table class="table table-sm table-hover align-middle">
-        <thead>
-          <tr>
-            <th>Mês</th>
-            <th>PM2100</th>
-            <th>PM2200</th>
-            <th>PM700</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody id="tbodyVolume"></tbody>
-      </table>
-    </div>
-
-    <div class="chart-wrap">
-      <canvas id="chartVolume"></canvas>
-    </div>
-  </section>
-
-  <section class="indicador-section">
-    <div class="section-title">
-      <h2>Tempo Médio de Montagem</h2>
-      <span class="status-muted" id="statusTempoMedio">--</span>
-    </div>
-
-    <div class="table-responsive">
-      <table class="table table-sm table-hover align-middle">
-        <thead>
-          <tr>
-            <th>Mês</th>
-            <th>PM2100</th>
-            <th>PM2200</th>
-            <th>PM700</th>
-          </tr>
-        </thead>
-        <tbody id="tbodyTempoMedio"></tbody>
-      </table>
-    </div>
-
-    <div class="chart-wrap">
-      <canvas id="chartTempoMedio"></canvas>
-    </div>
-  </section>
-
-  <section class="indicador-section">
-    <div class="section-title">
-      <h2>Alarmes por Falta de Componentes</h2>
-      <span class="status-muted" id="statusAlarmes">--</span>
-    </div>
-
-    <div class="table-responsive">
-      <table class="table table-sm table-hover align-middle">
-        <thead>
-          <tr>
-            <th>Data/Hora</th>
-            <th>Bancada</th>
-            <th>Modelo</th>
-            <th>Componente</th>
-            <th>Referência</th>
-            <th>Downtime</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="tbodyAlarmes"></tbody>
-      </table>
-    </div>
-
-    <div class="chart-wrap">
-      <canvas id="chartParetoAlarmes"></canvas>
-    </div>
-  </section>
-
-  <section class="indicador-section">
-    <div class="section-title">
-      <h2>Capacidade Ociosa</h2>
-      <span class="status-muted" id="statusOciosidade">--</span>
-    </div>
-
-    <div class="table-responsive">
-      <table class="table table-sm table-hover align-middle">
-        <thead>
-          <tr>
-            <th>Indicador / Dia</th>
-            <th>Valor</th>
-          </tr>
-        </thead>
-        <tbody id="tbodyOciosidade"></tbody>
-      </table>
-    </div>
-  </section>
 </div>
 {% endblock %}
 
-{% block scripts %}
+{% block scripts_extra %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{{ url_for('static', filename='js/indicadores/producao_indicadores.js') }}"></script>
 {% endblock %}
+
+
+
+// ====================================================================
+// [BLOCO] GLOBAL & ESTADOS
+// ====================================================================
+let chartVolume = null;
+let chartTempoMedio = null;
+let chartPareto = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+    const app = document.getElementById("indicadoresApp");
+    if (!app) return;
+
+    const apiUrl = app.dataset.apiUrl;
+    const dataInicio = app.dataset.dataInicio;
+    const dataFim = app.dataset.dataFim;
+
+    const inputInicio = document.getElementById("dataInicio");
+    const inputFim = document.getElementById("dataFim");
+    if (inputInicio) inputInicio.value = dataInicio ?? "";
+    if (inputFim) inputFim.value = dataFim ?? "";
+
+    carregarIndicadores();
+
+    document.getElementById("formFiltrosIndicadores")?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        await carregarIndicadores();
+    });
+
+    async function carregarIndicadores() {
+        try {
+            setLoading(true);
+            setSkeletons(true);
+
+            const inicio = document.getElementById("dataInicio")?.value || "";
+            const fim = document.getElementById("dataFim")?.value || "";
+
+            const response = await fetch(`${apiUrl}?data_inicio=${inicio}&data_fim=${fim}`);
+            const payload = await response.json();
+
+            if (!response.ok || !payload?.ok) {
+                throw new Error(payload?.mensagem || "Falha ao sincronizar a central de dados.");
+            }
+
+            atualizarKPIs(payload);
+            preencherVolume(payload.volume || {});
+            preencherTempoMedio(payload.tempo_medio || {});
+            preencherAlarmes(payload.alarmes_componentes || {});
+            preencherOciosidade(payload.ociosidade || {});
+
+        } catch (error) {
+            console.error(error);
+            alert(error.message || "Erro crítico de comunicação com o servidor.");
+        } finally {
+            setLoading(false);
+            setSkeletons(false);
+        }
+    }
+});
+
+// ====================================================================
+// [BLOCO] ANIMAÇÕES & INTERAÇÕES (MICRO-INTERAÇÕES)
+// ====================================================================
+function animateCounter(elementId, targetValue) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+
+    let start = 0;
+    const end = parseInt(targetValue, 10) || 0;
+    if (end === 0) { el.textContent = "0"; return; }
+    
+    const duration = 1200; // ms
+    const startTime = performance.now();
+
+    function updateNumber(now) {
+        const progress = Math.min((now - startTime) / duration, 1);
+        // Efeito do tipo EaseOutQuad para desacelerar no final
+        const easeProgress = progress * (2 - progress); 
+        el.textContent = Math.floor(easeProgress * end);
+
+        if (progress < 1) {
+            requestAnimationFrame(updateNumber);
+        } else {
+            el.textContent = end;
+        }
+    }
+    requestAnimationFrame(updateNumber);
+}
+
+function setSkeletons(active) {
+    const tbodies = ["tbodyVolume", "tbodyTempoMedio", "tbodyAlarmes", "tbodyOciosidade"];
+    tbodies.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (active) {
+            el.innerHTML = `<tr><td colspan="10" class="text-center"><div class="skeleton"></div></td></tr>`;
+        }
+    });
+}
+
+// ====================================================================
+// [BLOCO] KPIs
+// ====================================================================
+function atualizarKPIs(payload) {
+    const resumo = payload?.resumo || {};
+
+    animateCounter("kpiFinalizadas", resumo.maquinas_finalizadas);
+    animateCounter("kpiAnomalias", resumo.anomalias_processo);
+    animateCounter("kpiDiasProdutivos", resumo.dias_produtivos);
+    animateCounter("kpiDiasOciosos", resumo.dias_ociosos);
+
+    const kpiTempoMedio = document.getElementById("kpiTempoMedio");
+    if (kpiTempoMedio) {
+        kpiTempoMedio.textContent = resumo.tempo_medio_limpo_min != null
+            ? `${resumo.tempo_medio_limpo_min} min`
+            : "--";
+    }
+}
+
+// ====================================================================
+// [BLOCO] VOLUME (EFEITO GRADIENTE NAS BARRAS)
+// ====================================================================
+function preencherVolume(volume) {
+    const tbody = document.getElementById("tbodyVolume");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+    
+    const rows = volume.rows || [];
+    rows.forEach(row => {
+        tbody.insertAdjacentHTML("beforeend", `
+            <tr>
+                <td><span class="badge bg-dark text-info">${row.mes_ref ?? ""}</span></td>
+                <td>${row.PM2100 ?? 0}</td>
+                <td>${row.PM2200 ?? 0}</td>
+                <td>${row.PM700 ?? 0}</td>
+                <td><strong class="text-warning">${row.total ?? 0}</strong></td>
+            </tr>
+        `);
+    });
+
+    const statusVolume = document.getElementById("statusVolume");
+    if (statusVolume) statusVolume.textContent = `${rows.length} Ciclo(s) Ativo(s)`;
+
+    renderChartVolume(volume);
+}
+
+function renderChartVolume(volume) {
+    const ctx = document.getElementById("chartVolume")?.getContext("2d");
+    if (!ctx) return;
+    if (chartVolume) chartVolume.destroy();
+
+    // Criação de gradientes premium direto no Canvas
+    const gradCyan = ctx.createLinearGradient(0, 0, 0, 300);
+    gradCyan.addColorStop(0, "rgba(0, 242, 254, 0.8)");
+    gradCyan.addColorStop(1, "rgba(0, 242, 254, 0.1)");
+
+    const gradGreen = ctx.createLinearGradient(0, 0, 0, 300);
+    gradGreen.addColorStop(0, "rgba(0, 255, 135, 0.8)");
+    gradGreen.addColorStop(1, "rgba(0, 255, 135, 0.1)");
+
+    const gradOrange = ctx.createLinearGradient(0, 0, 0, 300);
+    gradOrange.addColorStop(0, "rgba(255, 153, 0, 0.8)");
+    gradOrange.addColorStop(1, "rgba(255, 153, 0, 0.1)");
+
+    const cores = { PM2100: gradCyan, PM2200: gradGreen, PM700: gradOrange };
+    const bordas = { PM2100: "#00f2fe", PM2200: "#00ff87", PM700: "#ff9900" };
+
+    chartVolume = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: volume.labels || [],
+            datasets: (volume.datasets || []).map(item => ({
+                label: item.label,
+                data: item.data,
+                backgroundColor: cores[item.label] || "rgba(255,255,255,0.1)",
+                borderColor: bordas[item.label] || "#999",
+                borderWidth: 1,
+                borderRadius: 4
+            }))
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: '#94a3b8', font: { family: 'Inter' } }, position: "bottom" }
+            },
+            scales: {
+                x: { stacked: true, grid: { display: false }, ticks: { color: '#94a3b8' } },
+                y: { stacked: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' }, beginAtZero: true }
+            }
+        }
+    });
+}
+
+// ====================================================================
+// [BLOCO] TEMPO MÉDIO (LINHAS NEON INTELIGENTES)
+// ====================================================================
+function preencherTempoMedio(tempo) {
+    const tbody = document.getElementById("tbodyTempoMedio");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+
+    const rows = tempo.rows || [];
+    rows.forEach(row => {
+        tbody.insertAdjacentHTML("beforeend", `
+            <tr>
+                <td><span class="badge bg-dark text-info">${row.mes_ref ?? ""}</span></td>
+                <td>⚡ ${formatNumber(row.PM2100)}</td>
+                <td>⚡ ${formatNumber(row.PM2200)}</td>
+                <td>⚡ ${formatNumber(row.PM700)}</td>
+            </tr>
+        `);
+    });
+
+    const statusTempoMedio = document.getElementById("statusTempoMedio");
+    if (statusTempoMedio) {
+        statusTempoMedio.textContent = `${(tempo.anomalias || []).length} Desvios Filtrados`;
+    }
+
+    renderChartTempoMedio(tempo);
+}
+
+function renderChartTempoMedio(tempo) {
+    const ctx = document.getElementById("chartTempoMedio")?.getContext("2d");
+    if (!ctx) return;
+    if (chartTempoMedio) chartTempoMedio.destroy();
+
+    const cores = { PM2100: "#00f2fe", PM2200: "#00ff87", PM700: "#ff9900" };
+
+    chartTempoMedio = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: tempo.labels || [],
+            datasets: (tempo.datasets || []).map(item => ({
+                label: item.label,
+                data: item.data,
+                borderColor: cores[item.label] || "#999",
+                backgroundColor: "transparent",
+                borderWidth: 3,
+                pointBackgroundColor: cores[item.label],
+                pointHoverRadius: 7,
+                tension: 0.3
+            }))
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: '#94a3b8' }, position: "bottom" }
+            },
+            scales: {
+                x: { grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#94a3b8' } },
+                y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }
+            }
+        }
+    });
+}
+
+// ====================================================================
+// [BLOCO] ALARMES (GLOW EFFECT AUTOMÁTICO SE HOUVER CRITICIDADE)
+// ====================================================================
+function preencherAlarmes(alarmes) {
+    const tbody = document.getElementById("tbodyAlarmes");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+
+    if (!alarmes || !alarmes.disponivel) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">${alarmes?.mensagem || "Sem registros de interrupção."}</td></tr>`;
+        if (chartPareto) { chartPareto.destroy(); chartPareto = null; }
+        return;
+    }
+
+    const historico = alarmes.historico || [];
+    historico.forEach(item => {
+        // Se o downtime passar de 15 minutos, aplica o efeito dinâmico glow-row de urgência
+        const isCritical = (parseInt(item.downtime_min) > 15) ? "glow-row text-danger" : "";
+        
+        tbody.insertAdjacentHTML("beforeend", `
+            <tr class="${isCritical}">
+                <td>${item.occurred_at ?? ""}</td>
+                <td><span class="text-secondary">${item.bench_id ?? ""}</span></td>
+                <td><strong>${item.modelo ?? ""}</strong></td>
+                <td><span class="text-info">${item.component_label ?? ""}</span></td>
+                <td><code>${item.serial ?? ""}</code></td>
+                <td><span class="badge bg-danger text-white">${item.downtime_min ?? 0} min</span></td>
+                <td><span class="text-warning">⚠️ ${item.status ?? ""}</span></td>
+            </tr>
+        `);
+    });
+
+    const statusAlarmes = document.getElementById("statusAlarmes");
+    if (statusAlarmes) statusAlarmes.textContent = `${historico.length} Disparos de Sistema`;
+
+    renderPareto(alarmes.pareto || []);
+}
+
+function renderPareto(pareto) {
+    const ctx = document.getElementById("chartParetoAlarmes")?.getContext("2d");
+    if (!ctx) return;
+    if (chartPareto) chartPareto.destroy();
+
+    const gradRed = ctx.createLinearGradient(0, 0, 0, 300);
+    gradRed.addColorStop(0, "rgba(255, 0, 85, 0.8)");
+    gradRed.addColorStop(1, "rgba(255, 0, 85, 0.1)");
+
+    chartPareto = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: pareto.map(x => x.component_label ?? ""),
+            datasets: [{
+                label: "Downtime Acumulado (min)",
+                data: pareto.map(x => x.downtime_min ?? 0),
+                backgroundColor: gradRed,
+                borderColor: "#ff0055",
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: '#94a3b8' }, position: "bottom" }
+            },
+            scales: {
+                x: { grid: { display: false }, ticks: { color: '#94a3b8' } },
+                y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }
+            }
+        }
+    });
+}
+
+// ====================================================================
+// [BLOCO] OCIOSIDADE
+// ====================================================================
+function preencherOciosidade(ociosidade) {
+    const tbody = document.getElementById("tbodyOciosidade");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+
+    tbody.insertAdjacentHTML("beforeend", `
+        <tr><td><strong>Dias em Produção Ativa</strong></td><td class="text-success font-monospace">${ociosidade?.dias_produtivos ?? 0} dias</td></tr>
+        <tr><td><strong>Dias Operando em Ociosidade</strong></td><td class="text-warning font-monospace">${ociosidade?.dias_ociosos ?? 0} dias</td></tr>
+        <tr><td><strong>Volumetria Percentual Desperdiçada</strong></td><td><span class="badge bg-warning text-dark font-monospace">${ociosidade?.taxa_ociosidade_pct ?? 0}%</span></td></tr>
+    `);
+
+    (ociosidade?.dias_sem_montagem || []).forEach(dia => {
+        tbody.insertAdjacentHTML("beforeend", `
+            <tr>
+                <td class="text-secondary">↳ Ausência de Carga Prática: ${dia.dia ?? ""}</td>
+                <td><small class="text-muted">(${dia.weekday ?? ""})</small></td>
+            </tr>
+        `);
+    });
+
+    const statusOciosidade = document.getElementById("statusOciosidade");
+    if (statusOciosidade) {
+        statusOciosidade.textContent = `${ociosidade?.dias_ociosos ?? 0} Períodos Críticos Detectados`;
+    }
+}
+
+// ====================================================================
+// [BLOCO] UTILS
+// ====================================================================
+function setLoading(status) {
+    const btn = document.getElementById("btnAplicarFiltros");
+    if (!btn) return;
+    btn.disabled = status;
+    btn.textContent = status ? "🔥 Sincronizando..." : "Sincronizar";
+}
+
+function formatNumber(value) {
+    if (value == null || isNaN(Number(value))) return "--";
+    return Number(value).toFixed(2);
+}
