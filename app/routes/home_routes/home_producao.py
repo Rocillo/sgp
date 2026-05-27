@@ -1,7 +1,7 @@
 # app/routes/home_routes/home_producao.py
 from datetime import date
-from flask import Blueprint, render_template, url_for, redirect
 from flask_login import login_required
+from flask import Blueprint, render_template, url_for, redirect, request
 
 # ====================================================================
 # [BLOCO] BLUEPRINT
@@ -100,6 +100,7 @@ def home_avisos_legacy_redirect():
 # [RESPONSABILIDADE] Redirecionar para endpoints existentes ou exibir mensagem de recurso indisponível
 # ====================================================================
 @home_producao_bp.route("/placeholder/<slug>", methods=["GET"])
+@login_required
 def placeholder(slug):
 
     # ====================================================================
@@ -108,14 +109,19 @@ def placeholder(slug):
     # ====================================================================
     if slug == "indicadores":
         hoje = date.today()
-        data_inicio = hoje.replace(day=1)
+
+        data_inicio_param = request.args.get("data_inicio")
+        data_fim_param = request.args.get("data_fim")
+
+        data_inicio = data_inicio_param or hoje.replace(day=1).isoformat()
+        data_fim = data_fim_param or hoje.isoformat()
 
         return render_template(
             "indicadores_templates/producao_indicadores.html",
             indicadores_api_url=url_for("indicadores_api_bp.api_indicadores_producao"),
             filtros_iniciais={
-                "data_inicio": data_inicio.isoformat(),
-                "data_fim": hoje.isoformat(),
+                "data_inicio": data_inicio,
+                "data_fim": data_fim,
             },
         )
     # ====================================================================
