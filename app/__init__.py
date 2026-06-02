@@ -203,8 +203,20 @@ def create_app() -> Flask:
     _try_register(app, "app.routes.home_routes.modulos", "modulos_bp")
     _try_register(app, "app.routes.home_routes.home_estoque", "estoque_bp")
     _try_register(app, "app.routes.home_routes.home_producao", "home_producao_bp")
+    _try_register(app, "app.routes.home_routes.home_compras", "compras_bp")
     # ====================================================================
     # [FIM BLOCO] blueprints_home_modulos
+    # ====================================================================
+
+    # 2.1) Compras - Requisições
+    # ====================================================================
+    # [BLOCO] BLOCO_UTIL
+    # [NOME] blueprints_compras_requisicoes
+    # [RESPONSABILIDADE] Registrar blueprint do módulo de requisições de compras
+    # ====================================================================
+    _try_register(app, "app.routes.compras_routes.requisicoes_routes", "requisicoes_bp")
+    # ====================================================================
+    # [FIM BLOCO] blueprints_compras_requisicoes
     # ====================================================================
 
     # 3) Estoque
@@ -444,6 +456,9 @@ def create_app() -> Flask:
             GPROPAlert,
             GPHipotRun,
             GPWorkOrder,
+            CompraRequisicao,
+            CompraRequisicaoItem,
+            CompraHistoricoStatus,
         )
 
         from app.models.avisos_models.aviso import Aviso

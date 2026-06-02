@@ -102,6 +102,355 @@
       [FIM BLOCO] weather_mini_styles
       ==================================================================== */
     
+
+      /* ====================================================================
+      [BLOCO] BLOCO_STYLE
+      [NOME] sidebar_layout_styles
+      [RESPONSABILIDADE] Estilos da sidebar global, layout lateral, estados ativos e responsividade
+      ==================================================================== */
+      :root{
+        --sgp-sidebar-bg:#0f1b2a;
+        --sgp-sidebar-card:#0c1624;
+        --sgp-sidebar-border:#1c2b45;
+        --sgp-sidebar-text:#cfe4ff;
+        --sgp-sidebar-muted:#7c8aa5;
+        --sgp-sidebar-active:#143055;
+        --sgp-sidebar-active-border:#2c5a9a;
+        --sgp-sidebar-white:#ffffff;
+        --sgp-sidebar-width:260px;
+        --sgp-sidebar-collapsed-width:78px;
+      }
+
+      .sgp-shell{
+        min-height:100vh;
+        display:flex;
+        background:#f5f7fb;
+      }
+
+      .sgp-sidebar{
+        position:fixed;
+        top:5px;
+        left:0;
+        bottom:0;
+        width:var(--sgp-sidebar-width);
+        background:var(--sgp-sidebar-bg);
+        border-right:1px solid var(--sgp-sidebar-border);
+        color:var(--sgp-sidebar-white);
+        z-index:1100;
+        display:flex;
+        flex-direction:column;
+        transition:width .22s ease, transform .22s ease;
+        box-shadow:0 18px 40px rgba(0,0,0,.28);
+      }
+
+      .sgp-sidebar-line{
+        height:4px;
+        width:100%;
+        background:linear-gradient(90deg,#e60000,#FF7A00,#00AEEF,#28a745,#e60000);
+        background-size:300% 150%;
+        animation:slide 7s linear infinite;
+      }
+
+      .sgp-sidebar-header{
+        padding:18px 16px 14px;
+        border-bottom:1px solid var(--sgp-sidebar-border);
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+      }
+
+      .sgp-sidebar-brand{
+        min-width:0;
+      }
+
+      .sgp-sidebar-brand-title{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        font-weight:800;
+        font-size:1.3rem;
+        line-height:1;
+        letter-spacing:.2px;
+        color:#fff;
+      }
+
+      .sgp-sidebar-brand-title i{
+        color:#00AEEF;
+      }
+
+        .sgp-sidebar-brand-subtitle {
+            display: block;
+            margin-top: 4px;
+            color: var(--sgp-sidebar-muted);
+            font-size: .82rem;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .sgp-sidebar-brand-subtitle.is-operator {
+            font-size: .72rem;
+            letter-spacing: .05em;
+            opacity: .75;
+        }
+
+      .sgp-sidebar-toggle{
+        width:34px;
+        height:34px;
+        border-radius:10px;
+        border:1px solid var(--sgp-sidebar-border);
+        background:var(--sgp-sidebar-card);
+        color:var(--sgp-sidebar-text);
+        cursor:pointer;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+      }
+
+      .sgp-sidebar-toggle:hover{
+        color:#fff;
+        border-color:var(--sgp-sidebar-active-border);
+      }
+
+      .sgp-sidebar-scroll{
+        flex:1;
+        overflow-y:auto;
+        padding:14px 12px;
+      }
+
+      .sgp-sidebar-section{
+        margin-bottom:18px;
+      }
+
+      .sgp-sidebar-section-title{
+        color:var(--sgp-sidebar-muted);
+        font-size:.72rem;
+        text-transform:uppercase;
+        letter-spacing:.08em;
+        margin:0 10px 8px;
+      }
+
+      .sgp-sidebar-nav{
+        display:flex;
+        flex-direction:column;
+        gap:6px;
+      }
+
+      .sgp-sidebar-link{
+        position:relative;
+        display:flex;
+        align-items:center;
+        gap:12px;
+        min-height:42px;
+        padding:10px 12px;
+        border-radius:10px;
+        color:var(--sgp-sidebar-text);
+        text-decoration:none;
+        border:1px solid transparent;
+        transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease;
+      }
+
+      .sgp-sidebar-link:hover{
+        background:var(--sgp-sidebar-card);
+        border-color:var(--sgp-sidebar-border);
+        color:#fff;
+        transform:translateX(2px);
+      }
+
+      .sgp-sidebar-link.active{
+        background:var(--sgp-sidebar-active);
+        border-color:var(--sgp-sidebar-active-border);
+        color:#fff;
+      }
+
+      .sgp-sidebar-link i{
+        width:22px;
+        min-width:22px;
+        text-align:center;
+        font-size:1.02rem;
+      }
+
+      .sgp-sidebar-link-label{
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+      }
+
+      .sgp-sidebar-badge{
+        margin-left:auto;
+        min-width:22px;
+        height:22px;
+        padding:0 7px;
+        border-radius:999px;
+        background:#e60000;
+        color:#fff;
+        font-size:.75rem;
+        font-weight:700;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+      }
+
+      .sgp-sidebar-footer{
+        border-top:1px solid var(--sgp-sidebar-border);
+        padding:12px;
+      }
+
+      .sgp-sidebar-user{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        padding:10px;
+        border-radius:12px;
+        background:var(--sgp-sidebar-card);
+        border:1px solid var(--sgp-sidebar-border);
+      }
+
+      .sgp-sidebar-user-icon{
+        width:34px;
+        height:34px;
+        border-radius:50%;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background:#143055;
+        border:1px solid #2c5a9a;
+        color:#fff;
+      }
+
+      .sgp-sidebar-user-text{
+        min-width:0;
+      }
+
+      .sgp-sidebar-user-name{
+        color:#fff;
+        font-weight:700;
+        font-size:.9rem;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+      }
+
+      .sgp-sidebar-user-role{
+        color:var(--sgp-sidebar-muted);
+        font-size:.78rem;
+      }
+
+      .sgp-content-wrap{
+        flex:1;
+        min-width:0;
+        margin-left:var(--sgp-sidebar-width);
+        transition:margin-left .22s ease;
+      }
+
+      body.sgp-sidebar-collapsed .sgp-sidebar{
+        width:var(--sgp-sidebar-collapsed-width);
+      }
+
+      body.sgp-sidebar-collapsed .sgp-content-wrap{
+        margin-left:var(--sgp-sidebar-collapsed-width);
+      }
+
+      body.sgp-sidebar-collapsed .sgp-sidebar-brand-subtitle,
+      body.sgp-sidebar-collapsed .sgp-sidebar-link-label,
+      body.sgp-sidebar-collapsed .sgp-sidebar-section-title,
+      body.sgp-sidebar-collapsed .sgp-sidebar-user-text,
+      body.sgp-sidebar-collapsed .sgp-sidebar-badge {
+          display: none;
+      }
+
+      body.sgp-sidebar-collapsed .sgp-sidebar-header{
+        justify-content:center;
+        padding-left:10px;
+        padding-right:10px;
+      }
+
+      body.sgp-sidebar-collapsed .sgp-sidebar-brand-title{
+        justify-content:center;
+      }
+
+      body.sgp-sidebar-collapsed .sgp-sidebar-brand-title span{
+        display:none;
+      }
+
+      body.sgp-sidebar-collapsed .sgp-sidebar-toggle i{
+        transform:rotate(180deg);
+      }
+
+      body.sgp-sidebar-collapsed .sgp-sidebar-link{
+        justify-content:center;
+        padding-left:10px;
+        padding-right:10px;
+      }
+
+      body.sgp-sidebar-collapsed .sgp-sidebar-link i{
+        width:auto;
+        min-width:auto;
+      }
+
+      .sgp-mobile-sidebar-open{
+        display:none;
+      }
+
+      .sgp-sidebar-backdrop{
+        display:none;
+      }
+
+      @media (max-width:900px){
+        .sgp-sidebar{
+          transform:translateX(-100%);
+          width:var(--sgp-sidebar-width);
+        }
+
+        .sgp-content-wrap{
+          margin-left:0;
+        }
+
+        body.sgp-sidebar-mobile-open .sgp-sidebar{
+          transform:translateX(0);
+        }
+
+        .sgp-sidebar-backdrop{
+          position:fixed;
+          inset:5px 0 0 0;
+          background:rgba(4,10,18,.52);
+          z-index:1090;
+        }
+
+        body.sgp-sidebar-mobile-open .sgp-sidebar-backdrop{
+          display:block;
+        }
+
+        .sgp-mobile-sidebar-open{
+          display:inline-flex;
+          width:36px;
+          height:36px;
+          border-radius:10px;
+          border:1px solid #1c2b45;
+          background:#0c1624;
+          color:#cfe4ff;
+          align-items:center;
+          justify-content:center;
+          cursor:pointer;
+        }
+
+        .sgp-mobile-sidebar-open:hover{
+          color:#fff;
+          border-color:#2c5a9a;
+        }
+
+        body.sgp-sidebar-collapsed .sgp-content-wrap{
+          margin-left:0;
+        }
+
+        body.sgp-sidebar-collapsed .sgp-sidebar{
+          width:var(--sgp-sidebar-width);
+        }
+      }
+      /* ====================================================================
+      [FIM BLOCO] sidebar_layout_styles
+      ==================================================================== */
+
       /* ====================================================================
       [FIM BLOCO] estilos_layout_base
       ==================================================================== */
@@ -119,8 +468,142 @@
 
     <!-- Contêiner principal da aplicação; recebe estado "ready" após o bootstrap visual -->
     <div class="app" id="app">
+      <!-- ====================================================================
+      [BLOCO] BLOCO_UTIL
+      [NOME] sidebar_global_navigation
+      [RESPONSABILIDADE] Renderizar sidebar global de navegação do SGP
+      ==================================================================== -->
+      <div class="sgp-sidebar-backdrop" id="sgp-sidebar-backdrop"></div>
+
+      <aside class="sgp-sidebar" id="sgp-sidebar" aria-label="Navegação lateral principal">
+        <div class="sgp-sidebar-line"></div>
+
+        <div class="sgp-sidebar-header">
+          <div class="sgp-sidebar-brand">
+            <div class="sgp-sidebar-brand-title">
+              <i class="fa-solid fa-gear"></i>
+              <span>SGP</span>
+            </div>
+              <small class="sgp-sidebar-brand-subtitle">Pneumark</small>
+              <small class="sgp-sidebar-brand-subtitle is-operator">Adriano Saraiva</small>
+            </div>
+
+          <button type="button" class="sgp-sidebar-toggle" id="sgp-sidebar-toggle" aria-label="Recolher menu">
+            <i class="fa-solid fa-angles-left"></i>
+          </button>
+        </div>
+
+        <div class="sgp-sidebar-scroll">
+          <section class="sgp-sidebar-section">
+            <h2 class="sgp-sidebar-section-title">Principal</h2>
+            <nav class="sgp-sidebar-nav">
+              <a class="sgp-sidebar-link" href="{{ url_for('modulos_bp.tela_modulos') }}" data-sidebar-match="/modulos">
+                <i class="fa-solid fa-house"></i>
+                <span class="sgp-sidebar-link-label">Dashboard</span>
+              </a>
+
+              <a class="sgp-sidebar-link" href="/producao/" data-sidebar-match="/producao">
+                <i class="fa-solid fa-chart-column"></i>
+                <span class="sgp-sidebar-link-label">Produção</span>
+              </a>
+
+              <a class="sgp-sidebar-link" href="{{ url_for('estoque_bp.tela_estoque') }}" data-sidebar-match="/estoque,/cadastrar_peca,/listar_pecas,/editar_peca,/cadastrar_fornecedor">
+                <i class="fa-solid fa-box-open"></i>
+                <span class="sgp-sidebar-link-label">Estoque</span>
+              </a>
+
+              <a class="sgp-sidebar-link" href="/compras" data-sidebar-match="/compras">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="sgp-sidebar-link-label">Compras</span>
+              </a>
+            </nav>
+          </section>
+
+          <section class="sgp-sidebar-section">
+            <h2 class="sgp-sidebar-section-title">Operações</h2>
+            <nav class="sgp-sidebar-nav">
+              <a class="sgp-sidebar-link" href="#" data-no-fade>
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+                <span class="sgp-sidebar-link-label">Manutenção</span>
+              </a>
+
+              <a class="sgp-sidebar-link" href="#" data-no-fade>
+                <i class="fa-solid fa-shield-halved"></i>
+                <span class="sgp-sidebar-link-label">Qualidade</span>
+              </a>
+
+              <a class="sgp-sidebar-link" href="#" data-no-fade>
+                <i class="fa-solid fa-clipboard-list"></i>
+                <span class="sgp-sidebar-link-label">Ordens de Serviço</span>
+              </a>
+
+              <a class="sgp-sidebar-link" href="#" data-no-fade>
+                <i class="fa-solid fa-screwdriver"></i>
+                <span class="sgp-sidebar-link-label">Ferramentaria</span>
+              </a>
+            </nav>
+          </section>
+
+          <section class="sgp-sidebar-section">
+            <h2 class="sgp-sidebar-section-title">Gestão</h2>
+            <nav class="sgp-sidebar-nav">
+              <a class="sgp-sidebar-link" href="#" data-no-fade>
+                <i class="fa-solid fa-users"></i>
+                <span class="sgp-sidebar-link-label">RH</span>
+              </a>
+
+              <a class="sgp-sidebar-link" href="#" data-no-fade>
+                <i class="fa-solid fa-chart-line"></i>
+                <span class="sgp-sidebar-link-label">Indicadores</span>
+              </a>
+
+              <a class="sgp-sidebar-link" href="#" data-no-fade>
+                <i class="fa-regular fa-bell"></i>
+                <span class="sgp-sidebar-link-label">Avisos</span>
+                <span class="sgp-sidebar-badge">8</span>
+              </a>
+            </nav>
+          </section>
+
+          <section class="sgp-sidebar-section">
+            <h2 class="sgp-sidebar-section-title">Sistema</h2>
+            <nav class="sgp-sidebar-nav">
+              <a class="sgp-sidebar-link" href="#" data-no-fade>
+                <i class="fa-solid fa-gear"></i>
+                <span class="sgp-sidebar-link-label">Configurações</span>
+              </a>
+            </nav>
+          </section>
+        </div>
+
+        <div class="sgp-sidebar-footer">
+          <div class="sgp-sidebar-user">
+            <div class="sgp-sidebar-user-icon">
+              <i class="fa-regular fa-circle-user"></i>
+            </div>
+            
+
+            <div class="sgp-sidebar-user-text">
+              <div class="sgp-sidebar-user-name">
+                {{ (current_user.username if current_user.is_authenticated else 'Operador') if current_user is defined else 'Operador' }}
+              </div>
+              <div class="sgp-sidebar-user-role">{% block sidebar_role %}Operador{% endblock %}</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+      <!-- ====================================================================
+      [FIM BLOCO] sidebar_global_navigation
+      ==================================================================== -->
+
+      <div class="sgp-shell">
+        <div class="sgp-content-wrap">
       <header class="appbar" role="banner">
         <div class="appbar-inner">
+          <button type="button" class="sgp-mobile-sidebar-open" id="sgp-mobile-sidebar-open" aria-label="Abrir menu lateral">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+
           <!-- Identidade visual do sistema e identificação textual do módulo atual -->
           <div class="brand">
             <img class="brand-logo" src="{{ url_for('static', filename='img/Logo jpg.jpg') }}" alt="Pneumark">
@@ -248,6 +731,8 @@
       <!-- ====================================================================
       [FIM BLOCO] footer_block
       ==================================================================== -->
+        </div>
+      </div>
     </div>
 
     <script>
@@ -350,24 +835,105 @@
       [FIM BLOCO] clock_widget
       ==================================================================== */
 
-      /* Widget de clima em modo estático.
-         Mantém previsibilidade visual quando não há integração externa ativa. */
+      /* Widget de clima com previsão compacta para Embu-Guaçu. */
       /* ====================================================================
       [BLOCO] BLOCO_UTIL
       [NOME] weather_widget
-      [RESPONSABILIDADE] Exibir clima fixo no header sem dependência de API externa
+      [RESPONSABILIDADE] Buscar e exibir previsão de 3 dias no header usando API Open-Meteo
       ==================================================================== */
-      // ===== CLIMA FIXO =====
+      // ===== CLIMA - PREVISÃO 3 DIAS =====
 
-      // Inicializa os campos do widget com valores padrão locais.
-      function initWeatherWidget() {
+      const WEATHER_API_URL = 'https://api.open-meteo.com/v1/forecast?latitude=-23.8297&longitude=-46.8136&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=3&timezone=America%2FSao_Paulo';
+
+      function weatherCodeToEmoji(code) {
+        const c = Number(code);
+
+        if (c === 0) return '☀️';
+        if ([1, 2].includes(c)) return '🌤️';
+        if (c === 3) return '☁️';
+        if ([45, 48].includes(c)) return '🌫️';
+        if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(c)) return '🌧️';
+        if ([95, 96, 99].includes(c)) return '⛈️';
+
+        return '🌡️';
+      }
+
+      function formatWeatherDayLabel(index, dateText) {
+        if (index === 0) return 'Hoje';
+        if (index === 1) return 'Amanhã';
+
+        const date = new Date(dateText + 'T00:00:00');
+        return date.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '');
+      }
+
+      function applyWeatherFallback() {
         if (weatherLabelEl) {
-          weatherLabelEl.textContent = WEATHER_FIXED.label;
+          weatherLabelEl.textContent = 'Embu-Guaçu';
         }
 
         if (weatherEl) {
-          weatherEl.textContent = WEATHER_FIXED.status;
+          weatherEl.textContent = 'Clima indisponível';
         }
+      }
+
+      function renderWeatherForecast(daily) {
+        const days = daily.time || [];
+        const codes = daily.weather_code || [];
+        const maxTemps = daily.temperature_2m_max || [];
+        const minTemps = daily.temperature_2m_min || [];
+        const rainChance = daily.precipitation_probability_max || [];
+
+        const forecastHtml = days.slice(0, 3).map((day, index) => {
+          const emoji = weatherCodeToEmoji(codes[index]);
+          const label = formatWeatherDayLabel(index, day);
+          const max = Math.round(Number(maxTemps[index]));
+          const min = Math.round(Number(minTemps[index]));
+          const rain = Math.round(Number(rainChance[index] || 0));
+
+          return `
+            <span style="display:inline-flex;flex-direction:column;align-items:center;gap:2px;padding:0 6px;border-left:${index === 0 ? '0' : '1px solid #1c2b45'};">
+              <span style="font-size:.72rem;opacity:.85;">${label}</span>
+              <span style="font-size:1rem;line-height:1;">${emoji}</span>
+              <span style="font-size:.72rem;line-height:1;">↑${max}°</span>
+              <span style="font-size:.72rem;line-height:1;opacity:.9;">↓${min}°</span>
+              <span style="font-size:.7rem;line-height:1;opacity:.8;">💧${rain}%</span>
+            </span>
+          `;
+        }).join('');
+
+        weatherLabelEl.textContent = 'Embu-Guaçu';
+        weatherEl.innerHTML = `
+          <span style="display:inline-flex;align-items:center;gap:2px;">
+            ${forecastHtml}
+          </span>
+        `;
+      }
+
+      function initWeatherWidget() {
+        if (!weatherLabelEl || !weatherEl) return;
+
+        weatherLabelEl.textContent = 'Embu-Guaçu';
+        weatherEl.textContent = 'Carregando...';
+
+        fetch(WEATHER_API_URL, { cache: 'no-store' })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('Falha ao buscar previsão');
+            }
+
+            return response.json();
+          })
+          .then((data) => {
+            if (!data || !data.daily) {
+              applyWeatherFallback();
+              return;
+            }
+
+            renderWeatherForecast(data.daily);
+          })
+          .catch(() => {
+            applyWeatherFallback();
+          });
       }
 
       initWeatherWidget();
@@ -410,6 +976,77 @@
       [FIM BLOCO] motd_widget
       ==================================================================== */
 
+
+      /* ====================================================================
+      [BLOCO] BLOCO_SCRIPT
+      [NOME] sidebar_global_navigation_script
+      [RESPONSABILIDADE] Controlar recolhimento, abertura mobile e item ativo da sidebar global
+      ==================================================================== */
+      const sidebarToggle = document.getElementById('sgp-sidebar-toggle');
+      const mobileSidebarOpen = document.getElementById('sgp-mobile-sidebar-open');
+      const sidebarBackdrop = document.getElementById('sgp-sidebar-backdrop');
+      const SIDEBAR_COLLAPSED_STORAGE_KEY = 'sgp_sidebar_collapsed';
+
+      function applySidebarCollapsedState() {
+        const isCollapsed = localStorage.getItem(SIDEBAR_COLLAPSED_STORAGE_KEY) === '1';
+        document.body.classList.toggle('sgp-sidebar-collapsed', isCollapsed);
+      }
+
+      function toggleSidebarCollapsed() {
+        const nextCollapsed = !document.body.classList.contains('sgp-sidebar-collapsed');
+        document.body.classList.toggle('sgp-sidebar-collapsed', nextCollapsed);
+        localStorage.setItem(SIDEBAR_COLLAPSED_STORAGE_KEY, nextCollapsed ? '1' : '0');
+      }
+
+      function openMobileSidebar() {
+        document.body.classList.add('sgp-sidebar-mobile-open');
+      }
+
+      function closeMobileSidebar() {
+        document.body.classList.remove('sgp-sidebar-mobile-open');
+      }
+
+      function bindSidebarControls() {
+        applySidebarCollapsedState();
+
+        if (sidebarToggle) {
+          sidebarToggle.addEventListener('click', toggleSidebarCollapsed);
+        }
+
+        if (mobileSidebarOpen) {
+          mobileSidebarOpen.addEventListener('click', openMobileSidebar);
+        }
+
+        if (sidebarBackdrop) {
+          sidebarBackdrop.addEventListener('click', closeMobileSidebar);
+        }
+
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') {
+            closeMobileSidebar();
+          }
+        });
+      }
+
+      function markActiveSidebarLink() {
+        const currentPath = window.location.pathname;
+        const links = document.querySelectorAll('.sgp-sidebar-link[data-sidebar-match]');
+
+        links.forEach((link) => {
+          const matchAttr = link.getAttribute('data-sidebar-match') || '';
+          const patterns = matchAttr.split(',').map((item) => item.trim()).filter(Boolean);
+          const isActive = patterns.some((pattern) => currentPath === pattern || currentPath.startsWith(pattern + '/') || currentPath.startsWith(pattern));
+
+          link.classList.toggle('active', isActive);
+        });
+      }
+
+      bindSidebarControls();
+      markActiveSidebarLink();
+      /* ====================================================================
+      [FIM BLOCO] sidebar_global_navigation_script
+      ==================================================================== */
+
       /* ====================================================================
       [FIM BLOCO] scripts_layout_base
       ==================================================================== */
@@ -432,6 +1069,8 @@ DOCUMENTO_HTML: layout_base
 BLOCO_STYLE: estilos_layout_base
 BLOCO_UTIL: appbar_layout_styles
 BLOCO_UTIL: weather_mini_styles
+BLOCO_STYLE: sidebar_layout_styles
+BLOCO_UTIL: sidebar_global_navigation
 BLOCO_UTIL: global_navigation
 BLOCO_UTIL: global_widgets
 BLOCO_UTIL: flash_messages
@@ -451,6 +1090,13 @@ BLOCO_UTIL: weather_widget
 FUNÇÃO: applyMotdFallback
 FUNÇÃO: loadMotdWidget
 BLOCO_API: motd_widget
+BLOCO_SCRIPT: sidebar_global_navigation_script
+FUNÇÃO: applySidebarCollapsedState
+FUNÇÃO: toggleSidebarCollapsed
+FUNÇÃO: openMobileSidebar
+FUNÇÃO: closeMobileSidebar
+FUNÇÃO: bindSidebarControls
+FUNÇÃO: markActiveSidebarLink
 ==================================================================== -->
 
 <!-- ====================================================================

@@ -27,6 +27,11 @@ from flask_sqlalchemy import SQLAlchemy  # type: ignore
 from app import db  # reuse the SQLAlchemy instance from the app
 from datetime import datetime
 from app.models_sqla.indicadores_models import GPProductionAlarm, GPWorkingCalendar
+from app.models_sqla.compras_models import (
+    CompraRequisicao,
+    CompraRequisicaoItem,
+    CompraHistoricoStatus,
+)
 
 # --- IMPORTS PARA LOGIN ---
 from flask_login import UserMixin
@@ -590,6 +595,10 @@ __all__ = [
     "GPWorkingCalendar",
     # OMIE
     "OmieRequisicao",
+    # Compras
+    "CompraRequisicao",
+    "CompraRequisicaoItem",
+    "CompraHistoricoStatus",
 ]
 
 # ------------------------------------------------------------
