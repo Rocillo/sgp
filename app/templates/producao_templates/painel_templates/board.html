@@ -588,61 +588,63 @@
 
   /* Estilo do Timer */
   .status-badge {
-      font-size: 16px; 
-      font-weight: 900;
-      text-transform: uppercase;
+    font-size: 16px;
+    font-weight: 900;
+    text-transform: uppercase;
   }
 
   /* Itens bloqueados na sequência (opacidade baixa) */
   .item-aguardando {
-      opacity: 0.3;
-      pointer-events: none;
+    opacity: 0.3;
+    pointer-events: none;
   }
 
   /* Botões base: Transparentes com borda colorida */
   .btn-checklist {
-      display: block;
-      text-align: center;
-      padding: 12px;
-      border-radius: 8px;
-      font-weight: 900;
-      transition: all 0.3s ease;
-      background: transparent;
-      opacity: 0.1; /* Nasce quase invisível */
-      pointer-events: none;
-      border: 3px solid transparent;
+    display: block;
+    text-align: center;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 900;
+    transition: all 0.3s ease;
+    background: transparent;
+    opacity: 0.1;
+    /* Nasce quase invisível */
+    pointer-events: none;
+    border: 3px solid transparent;
   }
 
   /* Quando liberado pelo item anterior ou timer */
   .btn-checklist.liberado {
-      opacity: 1;
-      pointer-events: auto;
-      cursor: pointer;
+    opacity: 1;
+    pointer-events: auto;
+    cursor: pointer;
   }
 
   /* --- SELEÇÃO: O segredo está aqui --- */
 
   /* Selecionado OK: Fundo Branco, Texto Verde, Borda Verde */
-  input[value="aprovado"]:checked + .btn-checklist {
-      background-color: #FFFFFF !important;
-      color: #22c55e !important; /* Cor var(--ok) */
-      border: 3px solid #22c55e !important;
+  input[value="aprovado"]:checked+.btn-checklist {
+    background-color: #FFFFFF !important;
+    color: #22c55e !important;
+    /* Cor var(--ok) */
+    border: 3px solid #22c55e !important;
   }
 
   /* Selecionado FALHA: Fundo Branco, Texto Vermelho, Borda Vermelha */
-  input[value="reprovado"]:checked + .btn-checklist {
-      background-color: #FFFFFF !important;
-      color: #ef4444 !important; /* Cor var(--late) */
-      border: 3px solid #ef4444 !important;
+  input[value="reprovado"]:checked+.btn-checklist {
+    background-color: #FFFFFF !important;
+    color: #ef4444 !important;
+    /* Cor var(--late) */
+    border: 3px solid #ef4444 !important;
   }
 
   /* Selecionado RETRABALHO: Fundo Branco, Texto Âmbar, Borda Âmbar */
-  input[value="retrabalho"]:checked + .btn-checklist {
-      background-color: #FFFFFF !important;
-      color: #f59e0b !important;
-      border: 3px solid #f59e0b !important;
+  input[value="retrabalho"]:checked+.btn-checklist {
+    background-color: #FFFFFF !important;
+    color: #f59e0b !important;
+    border: 3px solid #f59e0b !important;
   }
-
 </style>
 {% endblock %}
 
@@ -779,12 +781,8 @@
   </div>
 </div>
 
-<div class="modal-backdrop"
-     id="checklistBackdrop"
-     role="dialog"
-     aria-modal="true"
-     aria-labelledby="hipotModalTitle"
-     style="display:none;">
+<div class="modal-backdrop" id="checklistBackdrop" role="dialog" aria-modal="true" aria-labelledby="hipotModalTitle"
+  style="display:none;">
 
   <div class="modal" id="hipotModal">
 
@@ -795,29 +793,20 @@
     <form id="checklistForm">
 
       <!-- SERIAL -->
-      <input type="hidden"
-             id="hipotSerialInput"
-             name="serial">
+      <input type="hidden" id="hipotSerialInput" name="serial">
 
       <!-- OPERADOR -->
       <div style="margin-bottom: 12px;">
-        <label for="operadorId"
-               style="display:block;margin-bottom:5px;font-size:14px;">
+        <label for="operadorId" style="display:block;margin-bottom:5px;font-size:14px;">
           Operador / ID:
         </label>
 
-        <input type="text"
-               id="operadorId"
-               name="operadorId"
-               required
-               class="input-field"
-               placeholder="ID do Operador"
-               autocomplete="off">
+        <input type="text" id="operadorId" name="operadorId" required class="input-field" placeholder="ID do Operador"
+          autocomplete="off">
       </div>
 
       <!-- CHECKLIST DINÂMICO -->
-      <div id="checklistItems"
-           style="margin-top:15px;">
+      <div id="checklistItems" style="margin-top:15px;">
         <!-- ITENS GERADOS VIA JS -->
       </div>
 
@@ -859,12 +848,12 @@
         </button>
       </div> -->
 
-    
+
       <!-- AÇÕES (NOVO) -->
       <div class="actions" style="margin-top: 14px;">
         <button type="button" class="btn ghost" onclick="closeChecklist()">Cancelar</button>
         <button type="submit" id="checklistSubmitBtn" class="btn"
-                style="background:#22c55e; border-color:#22c55e; margin-left:10px;" disabled>
+          style="background:#22c55e; border-color:#22c55e; margin-left:10px;" disabled>
           💾 Salvar e Fechar
         </button>
       </div>
@@ -905,10 +894,10 @@
 
     // === CHECKLIST ===
     let checklistItems = [];
-      let checklistModeloAtual = '';
-      let checklistStartedAtIso = null;
-      let checklistRes = [];
-      let checklistNota = [];
+    let checklistModeloAtual = '';
+    let checklistStartedAtIso = null;
+    let checklistRes = [];
+    let checklistNota = [];
 
     let checklistIndex = 0;
     let checklistTimer = null;
@@ -1167,7 +1156,7 @@
       try {
         const lastOperator = localStorage.getItem('gp.hipot.operador');
         if (operadorInput && !operadorInput.value) operadorInput.value = lastOperator || '';
-      } catch (e) {}
+      } catch (e) { }
 
       checklistItemsContainer.innerHTML = 'Carregando itens...';
       backdrop.style.display = 'flex';
@@ -1194,73 +1183,73 @@
       }
     }
 
-  
-  // === CHECKLIST (novo fluxo: aprovado / reprovado / retrabalho + nota obrigatória) ===
-  let listaItensGlobal = [];
-  let itensProcessados = new Set(); // trava do cronômetro por item
 
-  function _getChecklistRoot() {
-    return document.getElementById('checklistBackdrop');
-  }
+    // === CHECKLIST (novo fluxo: aprovado / reprovado / retrabalho + nota obrigatória) ===
+    let listaItensGlobal = [];
+    let itensProcessados = new Set(); // trava do cronômetro por item
 
-  function _getChecklistSerial() {
-    const root = _getChecklistRoot();
-    const el = root ? root.querySelector('input[name="serial"]') : null;
-    return (el?.value || '').trim();
-  }
-
-  function _getChecklistOperador() {
-    const root = _getChecklistRoot();
-    const el = root ? root.querySelector('input[name="operadorId"]') : null;
-    return (el?.value || '').trim();
-  }
-
-  function verificarBotaoSalvar() {
-    if (!checklistSubmitBtn) return;
-
-    // 1) todos respondidos
-    const allAnswered = checklistRes.length === listaItensGlobal.length &&
-      checklistRes.every(v => v === 'aprovado' || v === 'reprovado' || v === 'retrabalho');
-
-    if (!allAnswered) {
-      checklistSubmitBtn.disabled = true;
-      return;
+    function _getChecklistRoot() {
+      return document.getElementById('checklistBackdrop');
     }
 
-    // 2) nota obrigatória quando reprovado/retrabalho
-    for (let i = 0; i < checklistRes.length; i++) {
-      const r = checklistRes[i];
-      if ((r === 'reprovado' || r === 'retrabalho') && !(checklistNota[i] || '').trim()) {
+    function _getChecklistSerial() {
+      const root = _getChecklistRoot();
+      const el = root ? root.querySelector('input[name="serial"]') : null;
+      return (el?.value || '').trim();
+    }
+
+    function _getChecklistOperador() {
+      const root = _getChecklistRoot();
+      const el = root ? root.querySelector('input[name="operadorId"]') : null;
+      return (el?.value || '').trim();
+    }
+
+    function verificarBotaoSalvar() {
+      if (!checklistSubmitBtn) return;
+
+      // 1) todos respondidos
+      const allAnswered = checklistRes.length === listaItensGlobal.length &&
+        checklistRes.every(v => v === 'aprovado' || v === 'reprovado' || v === 'retrabalho');
+
+      if (!allAnswered) {
         checklistSubmitBtn.disabled = true;
         return;
       }
+
+      // 2) nota obrigatória quando reprovado/retrabalho
+      for (let i = 0; i < checklistRes.length; i++) {
+        const r = checklistRes[i];
+        if ((r === 'reprovado' || r === 'retrabalho') && !(checklistNota[i] || '').trim()) {
+          checklistSubmitBtn.disabled = true;
+          return;
+        }
+      }
+
+      checklistSubmitBtn.disabled = false;
     }
 
-    checklistSubmitBtn.disabled = false;
-  }
+    function renderChecklist(itens) {
+      listaItensGlobal = Array.isArray(itens) ? itens : [];
+      itensProcessados.clear();
 
-  function renderChecklist(itens) {
-    listaItensGlobal = Array.isArray(itens) ? itens : [];
-    itensProcessados.clear();
+      checklistItems = listaItensGlobal; // mantém compatibilidade com código antigo (se houver)
+      checklistRes = new Array(listaItensGlobal.length).fill(null);
+      checklistNota = new Array(listaItensGlobal.length).fill('');
 
-    checklistItems = listaItensGlobal; // mantém compatibilidade com código antigo (se houver)
-    checklistRes = new Array(listaItensGlobal.length).fill(null);
-    checklistNota = new Array(listaItensGlobal.length).fill('');
+      const container = document.getElementById('checklistItems');
+      if (!container) return;
 
-    const container = document.getElementById('checklistItems');
-    if (!container) return;
+      container.innerHTML = '';
 
-    container.innerHTML = '';
+      listaItensGlobal.forEach((item, index) => {
+        const row = document.createElement('div');
+        row.id = `row_${index}`;
+        row.className = 'checklist-item-row' + (index > 0 ? ' item-aguardando' : '');
+        row.style = "margin-bottom: 20px; padding: 15px; background: #1a1a1a; border-radius: 12px; border: 1px solid #333;";
 
-    listaItensGlobal.forEach((item, index) => {
-      const row = document.createElement('div');
-      row.id = `row_${index}`;
-      row.className = 'checklist-item-row' + (index > 0 ? ' item-aguardando' : '');
-      row.style = "margin-bottom: 20px; padding: 15px; background: #1a1a1a; border-radius: 12px; border: 1px solid #333;";
+        const itemId = item.id ?? index;
 
-      const itemId = item.id ?? index;
-
-      row.innerHTML = `
+        row.innerHTML = `
         <div style="display:flex; justify-content:space-between; margin-bottom: 15px; align-items:center;">
           <span style="font-size: 15px; color: #fff; font-weight: 600;">${item.ordem ?? (index + 1)}. ${item.descricao ?? ''}</span>
           <span id="display_status_${index}" class="status-badge" style="color:#666; font-weight:900;">BLOQUEADO</span>
@@ -1288,121 +1277,121 @@
         </div>
       `;
 
-      container.appendChild(row);
+        container.appendChild(row);
 
-      const notaWrap = row.querySelector(`#nota_wrap_${index}`);
-      const notaEl = row.querySelector(`#nota_${index}`);
-      const radios = row.querySelectorAll(`input[type="radio"][name="status_${itemId}"]`);
+        const notaWrap = row.querySelector(`#nota_wrap_${index}`);
+        const notaEl = row.querySelector(`#nota_${index}`);
+        const radios = row.querySelectorAll(`input[type="radio"][name="status_${itemId}"]`);
 
-      function advanceIfReady() {
-        const r = (checklistRes[index] || '');
-        if (r === 'aprovado') {
-          ativarProximo(index + 1);
-          verificarBotaoSalvar();
-          return;
-        }
-        if (r === 'reprovado' || r === 'retrabalho') {
-          const txt = (notaEl?.value || '').trim();
-          if (txt.length > 0) {
-            checklistNota[index] = txt;
+        function advanceIfReady() {
+          const r = (checklistRes[index] || '');
+          if (r === 'aprovado') {
             ativarProximo(index + 1);
             verificarBotaoSalvar();
-          }
-        }
-      }
-
-      radios.forEach(radio => {
-        radio.addEventListener('change', () => {
-          const val = (radio.value || '').trim().toLowerCase();
-          checklistRes[index] = val;
-
-          if (val === 'aprovado') {
-            if (notaWrap) notaWrap.style.display = 'none';
-            checklistNota[index] = '';
-            advanceIfReady();
             return;
           }
-
-          // reprovado / retrabalho
-          if (notaWrap) notaWrap.style.display = 'block';
-          if (notaEl) {
-            notaEl.focus();
+          if (r === 'reprovado' || r === 'retrabalho') {
+            const txt = (notaEl?.value || '').trim();
+            if (txt.length > 0) {
+              checklistNota[index] = txt;
+              ativarProximo(index + 1);
+              verificarBotaoSalvar();
+            }
           }
-          verificarBotaoSalvar();
+        }
+
+        radios.forEach(radio => {
+          radio.addEventListener('change', () => {
+            const val = (radio.value || '').trim().toLowerCase();
+            checklistRes[index] = val;
+
+            if (val === 'aprovado') {
+              if (notaWrap) notaWrap.style.display = 'none';
+              checklistNota[index] = '';
+              advanceIfReady();
+              return;
+            }
+
+            // reprovado / retrabalho
+            if (notaWrap) notaWrap.style.display = 'block';
+            if (notaEl) {
+              notaEl.focus();
+            }
+            verificarBotaoSalvar();
+          });
         });
+
+        if (notaEl) {
+          notaEl.addEventListener('input', () => {
+            checklistNota[index] = (notaEl.value || '').trim();
+            advanceIfReady();
+            verificarBotaoSalvar();
+          });
+        }
       });
 
-      if (notaEl) {
-        notaEl.addEventListener('input', () => {
-          checklistNota[index] = (notaEl.value || '').trim();
-          advanceIfReady();
-          verificarBotaoSalvar();
-        });
-      }
-    });
-
-    ativarProximo(0);
-    verificarBotaoSalvar();
-  }
-
-  function ativarProximo(index) {
-    // fim: apenas habilita salvar (não auto-salva)
-    if (index >= listaItensGlobal.length) {
+      ativarProximo(0);
       verificarBotaoSalvar();
-      return;
     }
 
-    // trava do cronômetro do item
-    if (itensProcessados.has(index)) return;
-    itensProcessados.add(index);
+    function ativarProximo(index) {
+      // fim: apenas habilita salvar (não auto-salva)
+      if (index >= listaItensGlobal.length) {
+        verificarBotaoSalvar();
+        return;
+      }
 
-    const item = listaItensGlobal[index];
-    const row = document.getElementById(`row_${index}`);
-    const display = document.getElementById(`display_status_${index}`);
-    const bOk = document.getElementById(`l_ok_${index}`);
-    const bFail = document.getElementById(`l_fail_${index}`);
-    const bRework = document.getElementById(`l_rework_${index}`);
+      // trava do cronômetro do item
+      if (itensProcessados.has(index)) return;
+      itensProcessados.add(index);
 
-    if (!row || !display || !bOk || !bFail) return;
+      const item = listaItensGlobal[index];
+      const row = document.getElementById(`row_${index}`);
+      const display = document.getElementById(`display_status_${index}`);
+      const bOk = document.getElementById(`l_ok_${index}`);
+      const bFail = document.getElementById(`l_fail_${index}`);
+      const bRework = document.getElementById(`l_rework_${index}`);
 
-    row.classList.remove('item-aguardando');
-    row.style.opacity = "1";
+      if (!row || !display || !bOk || !bFail) return;
 
-    if (item.bloqueante && item.min_s > 0) {
-      let seg = item.min_s;
-      display.style.color = "#fccf7e";
+      row.classList.remove('item-aguardando');
+      row.style.opacity = "1";
 
-      if (row.dataset.intervalId) clearInterval(Number(row.dataset.intervalId));
+      if (item.bloqueante && item.min_s > 0) {
+        let seg = item.min_s;
+        display.style.color = "#fccf7e";
 
-      const crono = setInterval(() => {
-        if (seg <= 0) {
-          clearInterval(crono);
-          display.textContent = "LIBERADO";
-          display.style.color = "#22c55e";
-          display.style.fontSize = "18px";
-          bOk.classList.add('liberado');
-          bFail.classList.add('liberado');
-          if (bRework) bRework.classList.add('liberado');
-        } else {
-          display.textContent = `ESPERE ${seg}s`;
-          seg--;
-        }
-      }, 1000);
+        if (row.dataset.intervalId) clearInterval(Number(row.dataset.intervalId));
 
-      row.dataset.intervalId = String(crono);
-    } else {
-      display.textContent = "LIBERADO";
-      display.style.color = "#22c55e";
-      bOk.classList.add('liberado');
-      bFail.classList.add('liberado');
-      if (bRework) bRework.classList.add('liberado');
+        const crono = setInterval(() => {
+          if (seg <= 0) {
+            clearInterval(crono);
+            display.textContent = "LIBERADO";
+            display.style.color = "#22c55e";
+            display.style.fontSize = "18px";
+            bOk.classList.add('liberado');
+            bFail.classList.add('liberado');
+            if (bRework) bRework.classList.add('liberado');
+          } else {
+            display.textContent = `ESPERE ${seg}s`;
+            seg--;
+          }
+        }, 1000);
+
+        row.dataset.intervalId = String(crono);
+      } else {
+        display.textContent = "LIBERADO";
+        display.style.color = "#22c55e";
+        bOk.classList.add('liberado');
+        bFail.classList.add('liberado');
+        if (bRework) bRework.classList.add('liberado');
+      }
+
+      row.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
 
-
-function liberarChecklistItem(index) {
+    function liberarChecklistItem(index) {
       const item = checklistItems[index];
       const div = document.querySelector(`.check-item[data-index="${index}"]`);
       const input = div.querySelector('input');
@@ -1459,7 +1448,7 @@ function liberarChecklistItem(index) {
     }
 
 
-    
+
     document.getElementById('checklistForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -1472,7 +1461,7 @@ function liberarChecklistItem(index) {
       }
       if (!operador) {
         showToast('Atenção', 'O ID do Operador é obrigatório.', 'warn', 3000);
-        try { _getChecklistRoot()?.querySelector('input[name="operadorId"]')?.focus(); } catch (e) {}
+        try { _getChecklistRoot()?.querySelector('input[name="operadorId"]')?.focus(); } catch (e) { }
         return;
       }
 
@@ -1482,16 +1471,16 @@ function liberarChecklistItem(index) {
         return;
       }
 
-       const itens = listaItensGlobal.map((item, idx) => ({
+      const itens = listaItensGlobal.map((item, idx) => ({
         ordem: item.ordem ?? (idx + 1),
         descricao: item.descricao || '',
         tempo_alvo_s: Number(item.tempo_alvo_s || item.tempo_seg || item.min_s || 1),
         resultado:
           checklistRes[idx] === 'aprovado' ? 'ok' :
-          checklistRes[idx] === 'reprovado' ? 'nao' :
-          checklistRes[idx] === 'retrabalho' ? 'retrabalho' :
-          'ok',        
-          nota: (checklistNota[idx] || '').trim()
+            checklistRes[idx] === 'reprovado' ? 'nao' :
+              checklistRes[idx] === 'retrabalho' ? 'retrabalho' :
+                'ok',
+        nota: (checklistNota[idx] || '').trim()
       }));
 
       const payload = {
@@ -1545,11 +1534,11 @@ function liberarChecklistItem(index) {
         const rows = document.querySelectorAll('#checklistItems .checklist-item-row');
         rows.forEach(r => {
           if (r.dataset && r.dataset.intervalId) {
-            try { clearInterval(Number(r.dataset.intervalId)); } catch (e) {}
+            try { clearInterval(Number(r.dataset.intervalId)); } catch (e) { }
             delete r.dataset.intervalId;
           }
         });
-      } catch (e) {}
+      } catch (e) { }
 
       checklistBackdrop.style.display = 'none';
     }
@@ -1695,12 +1684,12 @@ function liberarChecklistItem(index) {
     if (btnEnableAudio) btnEnableAudio.addEventListener('click', () => {
       AudioMgr.unlock(); showToast('Áudio ativado', 'Anúncios por voz habilitados.', 'success', 2500);
     });
-    
+
     if (btnToggleAudio) btnToggleAudio.addEventListener('click', () => {
       AudioMgr.setMuted(!AudioMgr.muted());
       showToast(AudioMgr.muted() ? 'Áudio desativado' : 'Áudio ativado', '', 'success', 1800);
     });
-    
+
     if (audioVolume) audioVolume.addEventListener('input', (e) => AudioMgr.setVolume(e.target.value));
 
     // Render Board
@@ -1714,28 +1703,28 @@ function liberarChecklistItem(index) {
     }
 
     function renderBoard(columns) {
-      
+
       lastData = columns || [];
-      
+
       grid.innerHTML = "";
-      
+
       lastData.forEach(col => {
-        
+
         const colEl = h('div', 'board-col');
-        
+
         colEl.dataset.colId = col.id || '';
-        
+
         const title = h('h3', '', col.title || col.id || '');
-        
+
         if (col.count != null) {
           const b = h('span', 'badge', String(col.count));
           title.appendChild(b);
         }
-        
+
         colEl.appendChild(title);
-        
+
         let colItems = col.items || [];
-        
+
         if ((col.id || '') === 'final') {
           colItems = colItems.slice().sort((a, b) => getFinishTimestamp(b) - getFinishTimestamp(a));
           if (FINAL_CFG.max_items != null && colItems.length > FINAL_CFG.max_items) {
@@ -1773,10 +1762,10 @@ function liberarChecklistItem(index) {
             const elapsed = (Date.now() - parseSinceToMs(it.since)) / 1000;
             applyStateByRatio(el, elapsed / it.expected_s);
           }
-          
+
           const meta = h('div', 'meta');
           const res = (it.result || '').toString().toUpperCase();
-          
+
           if (res) {
             let label = res, cls = 'tag';
             if (res === 'OK') { label = '✅ OK'; cls += ' ok'; }
@@ -1788,13 +1777,13 @@ function liberarChecklistItem(index) {
 
           if (it.rework_flag) meta.appendChild(h('span', 'tag rework', 'Retrabalho'));
           if (it.workstation) meta.appendChild(h('span', 'tag ws', `WS ${it.workstation}`));
-          
+
           if ((col.id || '') === 'final' && it.finished_at) {
             const d = new Date(it.finished_at);
             const txt = isNaN(d.getTime()) ? it.finished_at : d.toLocaleString();
             meta.appendChild(h('span', 'tag fin', `Concluído: ${txt}`));
           }
-          
+
           if (meta.children.length) el.appendChild(meta);
 
           // Tooltip
@@ -1816,25 +1805,25 @@ function liberarChecklistItem(index) {
     }
 
     function repaintTimers() {
-      
+
       if (!lastData) return;
-      
+
       const subs = document.querySelectorAll('.kitem .sub');
       subs.forEach(sub => {
-        
+
         const since = sub.dataset.since; const expected_s = sub.dataset.expected;
         const parentCard = sub.closest('.kitem'); const colEl = sub.closest('.board-col');
-        
+
         if (!since || !expected_s || !parentCard || !colEl) return;
-        
+
         const colId = colEl.dataset.colId || '';
-        
+
         if (!/^b[1-8]$/.test(colId)) return;
-        
+
         const start = parseSinceToMs(since); const expected = Number(expected_s);
-        
+
         if (isNaN(start) || isNaN(expected)) return;
-        
+
         const elapsed_s = (Date.now() - start) / 1000;
         const ratio = elapsed_s / expected;
         sub.textContent = `${sub.dataset.modelo} (${formatMMSS(elapsed_s)})`;
@@ -1844,45 +1833,45 @@ function liberarChecklistItem(index) {
 
     // API Calls
     function buildAnnouncement(payload, data) {
-      
+
       const benchMap = {
         sep: 'Separação de Peças',
         b1: 'Bancada 1', b2: 'Bancada 2', b3: 'Bancada 3', b4: 'Bancada 4',
         b5: 'Hi-Pot', b6: 'Bancada 6', b7: 'Bancada 7', b8: 'Checklist',
         final: 'Produto Finalizado'
       };
-      
+
       const modelo = data.final_message?.modelo || '';
       const b = benchMap[payload?.bench_id] || 'Bancada';
       const act = (payload?.action === 'finish') ? 'Finalizada' : 'Atualizada';
-      
+
       if (!modelo) return `Etapa ${b}. ${act}.`;
-      
+
       return `Montagem da ${modelo} na ${b}. ${act}.`;
     }
 
     function announceBenchDone({ bench, modelo, serial, operador }) {
-      
+
       if (!bench) return;
-      
+
       try { AudioMgr.chime('airplane_dd'); } catch (e) { }
-      
+
       const phrase = `Montagem do ${modelo} na etapa ${bench} concluída.`;
-      
+
       if (phrase) AudioMgr.queue(phrase);
     }
 
     async function postScan(payload) {
-      
+
       try {
         const resp = await fetch('/producao/gp/painel/api/scan', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        
+
         let data = {};
-        
+
         try { data = await resp.json(); } catch { data = { ok: false, error: 'fetch_failed' }; }
 
         if (!resp.ok || !data.ok) {
@@ -1900,66 +1889,66 @@ function liberarChecklistItem(index) {
             serial: data.serial,
             operador: data.operador
           });
-        
+
         }
 
         if (data.final_message) {
-          
+
           const { titulo, mensagem, modelo, serial, operador } = data.final_message;
           showToast(titulo || 'Concluído', mensagem || '', 'success', 2500);
           openFinalModal(titulo || 'Concluído', mensagem || '');
-          
+
           try {
             const phrase = buildAnnouncement(payload, data);
             if (phrase) AudioMgr.queue(phrase);
-          } 
-          
+          }
+
           catch (e) { }
         }
 
         if (data.serial && data.moved_to) {
-          
+
           setStatus('status--ok', `Scan OK (${data.serial} → ${data.moved_to})`);
-        
-        } 
+
+        }
         else {
-          
+
           setStatus('status--ok', 'Scan OK');
-        
+
         }
 
         loadBoard();
         return data;
 
-      } 
-      
+      }
+
       catch (e) {
-        
+
         const msg = friendlyErrorText({ error: 'fetch_failed', hint: String(e) });
         setStatus('status--error', msg);
         showToast('Atenção', msg, 'error', 4500);
         return { ok: false, error: 'fetch_failed', detail: String(e) };
-      
+
       }
     }
 
     async function undoScanAPI(serial) {
-      
+
       try {
-        
+
         const r = await fetch(`/producao/gp/painel/api/scan/undo`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ serial })
         });
-        
+
         const d = await r.json().catch(() => ({}));
-        
+
         if (!r.ok || !d.ok) { return { ok: false }; }
-        
+
         return d;
-      } 
-      
+      }
+
       catch {
         return { ok: false };
       }
@@ -1967,21 +1956,21 @@ function liberarChecklistItem(index) {
 
     // Manual controls (buttons)
     async function sendScan() {
-      
+
       const raw = (scanSerial?.value || '').trim();
-      
+
       if (!raw) {
         setStatus('status--error', 'Informe o serial.');
         scanSerial?.focus(); return;
       }
-      
+
       let payload;
       const upper = raw.toUpperCase();
-      
+
       if (upper.startsWith('B') || upper.startsWith('SEP') || raw.includes('-') || raw.includes(':')) {
         payload = { raw_scan: raw, operador: (window.OPERADOR || '').trim() };
-      } 
-      
+      }
+
       else {
         payload = {
           serial: raw,
@@ -1992,78 +1981,78 @@ function liberarChecklistItem(index) {
       }
 
       const data = await postScan(payload);
-      
+
       if (data?.ok) {
         if (scanSerial) scanSerial.value = '';
       }
-    
+
     }
 
     async function undoScan() {
-      
+
       const serial = (scanSerial?.value || '').trim();
-      
+
       if (!serial) { setStatus('status--error', 'Informe o serial para desfazer.'); return; }
-      
+
       const d = await undoScanAPI(serial);
-      
+
       if (!d.ok) { setStatus('status--error', 'Falha ao desfazer.'); return; }
-      
+
       setStatus('status--ok', `Desfeito. Voltou para ${d.moved_to}.`);
-      
+
       if (scanSerial) scanSerial.value = '';
-      
+
       loadBoard();
     }
 
     if (btnScan) btnScan.addEventListener('click', sendScan);
 
     if (scanSerial) scanSerial.addEventListener('keydown', (e) => {
-      
+
       if (e.key === 'Enter' && e.shiftKey) { e.preventDefault(); undoScan(); return; }
-      
+
       if (e.key === 'Enter') { e.preventDefault(); sendScan(); }
-    
+
     });
 
     // Init
     async function loadBoard() {
       try {
-        
+
         setStatus('status--loading', 'Atualizando…');
-        
+
         const r = await fetch(`/producao/gp/painel/api/board`, { cache: 'no-store' });
-        
+
         if (!r.ok) throw new Error('http');
-        
+
         const d = await r.json();
-        
+
         if (!d.ok) throw new Error('payload');
-        
+
         lastBoardData = d;
         checkROPAlert();
         renderBoard(d.columns);
         lastUpdateAt = Date.now();
         setStatus('status--ok', 'Atualizado agora');
         repaintTimers();
-      
-      } 
+
+      }
       catch {
         setStatus('status--error', 'Falha ao atualizar');
       }
     }
 
     setInterval(() => {
-      
+
       if (!lastUpdateAt) return;
-      
+
       const diff = Math.floor((Date.now() - lastUpdateAt) / 1000);
-      
+
       if (diff <= 1) { statusText.textContent = 'Atualizado agora'; return; }
-      
+
       statusText.textContent = `Atualizado há ${diff}s`;
     }, 1000);
-    
+
     setInterval(repaintTimers, 1000);
     setInterval(loadBoard, 4000);
     loadBoard();
